@@ -116,6 +116,13 @@
           </p>
         </header>
 
+        <a class="tryon__cta" href="tryon.html" data-tryon-link>
+          <span class="tryon__cta-art" data-cta-art aria-hidden="true"></span>
+          <span class="tryon__cta-title display" data-i18n="ctaTitle">3D-фігура<br />чекає на ескіз</span>
+          <span class="tryon__cta-text mono" data-i18n="ctaText">На весь екран, з жестами: обертай, наближай, тягни тату.</span>
+          <span class="btn btn--big" data-i18n="ctaButton">Відкрити примірочну →</span>
+        </a>
+
         <div class="tryon__app" data-tryon>
           <div class="tryon__stage">
             <div class="tryon__canvas" data-tryon-canvas>
@@ -128,9 +135,10 @@
               <button type="button" data-reset aria-label="Скинути вигляд" data-i18n-attr="aria-label:resetView">⟲</button>
             </div>
             <p class="tryon__hint hand" data-i18n="tryonHint">тягни, щоб обертати ↻</p>
+            <a class="tryon__full mono" href="tryon.html" data-tryon-link data-i18n="openFull">на весь екран ↗</a>
           </div>
 
-          <form class="sheet" data-panel onsubmit="return false">
+          <form class="sheet" data-panel>
             <div class="sheet__head mono">
               <span data-i18n="sheetTitle">Бланк примірки</span>
               <span data-sheet-no>№ 0001</span>
@@ -139,9 +147,9 @@
             <fieldset>
               <legend class="mono" data-i18n="sheetSketch">1. Ескіз</legend>
               <label class="upload" data-drop>
-                <input type="file" accept="image/*" data-upload hidden />
+                <input type="file" accept="image/png,image/jpeg,image/webp" data-upload hidden />
                 <span class="upload__big" data-i18n="uploadBig">Завантажити свій</span>
-                <span class="upload__small mono" data-i18n="uploadSmall">PNG/JPG · фото з паперу теж ок — фон приберемо</span>
+                <span class="upload__small mono" data-upload-hint data-i18n="uploadSmall">PNG/JPG · фото з паперу теж ок — фон приберемо</span>
               </label>
               <div class="sheet__designs" data-designs></div>
             </fieldset>
@@ -249,7 +257,6 @@
               <div><dt data-i18n="carePool">лазня, басейн</dt><dd data-i18n="carePoolV">— 2 тижні</dd></div>
               <div><dt data-i18n="careSun">сонце</dt><dd data-i18n="careSunV">— 1 місяць, потім SPF 50</dd></div>
               <div><dt data-i18n="careScratch">чухати</dt><dd data-i18n="careScratchV">не можна :(</dd></div>
-              <div><dt data-i18n="careTouch">корекція</dt><dd>0 ₴</dd></div>
             </dl>
             <p class="receipt__dash">--------------------------------</p>
             <div class="receipt__total"><span data-i18n="careTotal">РАЗОМ</span><span data-i18n="forever">НАЗАВЖДИ</span></div>
@@ -274,23 +281,27 @@
         <form class="book__form" data-book>
           <label class="field field--wide">
             <span class="mono" data-i18n="fIdea">Ідея</span>
-            <textarea name="idea" rows="3" placeholder="метелик на передпліччі, тонкою лінією…" data-i18n-attr="placeholder:fIdeaPh" required></textarea>
+            <textarea name="idea" rows="3" maxlength="1500" placeholder="метелик на передпліччі, тонкою лінією…" data-i18n-attr="placeholder:fIdeaPh" required></textarea>
           </label>
           <label class="field">
             <span class="mono" data-i18n="fZone">Зона</span>
-            <input name="zone" placeholder="передпліччя" data-i18n-attr="placeholder:fZonePh" />
+            <input name="zone" maxlength="80" placeholder="передпліччя" data-i18n-attr="placeholder:fZonePh" />
           </label>
           <label class="field">
             <span class="mono" data-i18n="fSize">Розмір, см</span>
-            <input name="size" inputmode="decimal" placeholder="10" />
-          </label>
-          <label class="field">
-            <span class="mono" data-i18n="fName">Як до тебе звертатися</span>
-            <input name="name" placeholder="Ім’я" data-i18n-attr="placeholder:fNamePh" required />
+            <input name="size" inputmode="decimal" maxlength="20" placeholder="10" />
           </label>
           <label class="field">
             <span class="mono" data-i18n="fWhen">Зручні дні</span>
-            <input name="when" placeholder="будні після 15:00" data-i18n-attr="placeholder:fWhenPh" />
+            <input name="when" maxlength="120" placeholder="будні після 15:00" data-i18n-attr="placeholder:fWhenPh" />
+          </label>
+          <label class="field field--name">
+            <span class="mono" data-i18n="fName">Як до тебе звертатися</span>
+            <input name="name" autocomplete="given-name" maxlength="80" placeholder="Ім’я" data-i18n-attr="placeholder:fNamePh" required />
+          </label>
+          <label class="field field--contact">
+            <span class="mono" data-i18n="fContact">Instagram, Telegram або телефон</span>
+            <input name="contact" autocomplete="tel" maxlength="120" placeholder="@нік або +380…" data-i18n-attr="placeholder:fContactPh" required />
           </label>
           <div class="book__shot" data-shot hidden>
             <img alt="Знімок з примірочної" data-i18n-attr="alt:shotTitle" data-shot-img />
@@ -300,8 +311,10 @@
               <button type="button" class="link mono" data-shot-remove data-i18n="shotRemove">прибрати</button>
             </div>
           </div>
+          <label class="book__trap" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off" /></label>
           <div class="book__send">
             <button class="btn btn--big" type="submit" data-i18n="bookSubmit">Надіслати в Direct →</button>
+            <a class="link mono" data-direct hidden target="_blank" rel="noopener" data-i18n="bookDirect">або напиши в Direct ↗</a>
             <a class="link mono" data-telegram hidden target="_blank" rel="noopener" data-i18n="bookTelegram">або в Telegram</a>
             <p class="book__fine mono" data-book-status data-i18n="bookFine">Текст заявки скопіюється — залишиться вставити його в повідомлення.</p>
           </div>

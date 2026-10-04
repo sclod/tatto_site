@@ -720,6 +720,23 @@ section {
   background: var(--ink);
   color: var(--paper);
 }
+.tryon__full {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 99px;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+.tryon__full:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.tryon__cta {
+  display: none;
+}
 .tryon__hint {
   position: absolute;
   left: 22px;
@@ -1102,6 +1119,8 @@ input[type='range']::-moz-range-thumb {
   display: flex;
   justify-content: center;
   padding-top: 18px;
+  /* чек «выезжает» из щели: всё, что выше неё, обрезается */
+  overflow: hidden;
 }
 .care__slot::before {
   /* щель кассового аппарата */
@@ -1202,7 +1221,7 @@ input[type='range']::-moz-range-thumb {
 }
 .book__form {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0 var(--gutter);
   padding: 0 var(--gutter);
 }
@@ -1212,8 +1231,16 @@ input[type='range']::-moz-range-thumb {
   padding: 14px 0;
   border-bottom: 1px solid var(--ink);
 }
-.field--wide {
+.field {
+  grid-column: span 2;
+}
+.field--wide,
+.book__form:not(.has-bot) .field--name {
   grid-column: 1 / -1;
+}
+.field--name,
+.field--contact {
+  grid-column: span 3;
 }
 .field .mono {
   color: var(--ink-soft);
@@ -1259,6 +1286,13 @@ input[type='range']::-moz-range-thumb {
 .book__shot .hand {
   margin: 4px 0 8px;
   font-size: 22px;
+}
+.book__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 .book__send {
   grid-column: 1 / -1;
@@ -1472,6 +1506,44 @@ input[type='range']::-moz-range-thumb {
   .tryon__stage {
     border-radius: 200px 200px 14px 14px;
   }
+  /* на телефоне 3D открывается отдельной страницей на весь экран */
+  .tryon__app {
+    display: none;
+  }
+  .tryon__cta {
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+    margin: 0 var(--gutter);
+    padding: 120px 20px 24px;
+    border: 1px solid var(--ink);
+    border-radius: 200px 200px 14px 14px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 40% at 50% 30%, rgba(255, 255, 255, 0.6), transparent 70%),
+      repeating-linear-gradient(0deg, transparent 0 31px, rgba(22, 21, 27, 0.06) 31px 32px),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(22, 21, 27, 0.06) 31px 32px);
+  }
+  .tryon__cta-art {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    width: 110px;
+    transform: translateX(-50%) rotate(-8deg);
+  }
+  .tryon__cta-art img {
+    width: 100%;
+  }
+  .tryon__cta-title {
+    font-size: 34px;
+    line-height: 0.95;
+  }
+  .tryon__cta-text {
+    text-transform: none;
+    color: var(--ink-soft);
+  }
   .tryon__views button {
     padding: 7px 9px;
     font-size: 11px;
@@ -1525,6 +1597,9 @@ input[type='range']::-moz-range-thumb {
   }
   .book__form {
     grid-template-columns: 1fr;
+  }
+  .book__form .field {
+    grid-column: 1 / -1;
   }
   .lightbox {
     grid-template-columns: 1fr;

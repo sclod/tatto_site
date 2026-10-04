@@ -7,6 +7,9 @@ export const site = {
   city: { uk: 'Місто', en: 'City' },
   studio: { uk: 'Студія · адреса за записом', en: 'Studio · address on booking' },
   timezone: 'Europe/Kyiv',
+  // Адрес Cloudflare Worker, который пересылает заявки в Telegram-бота (worker/README.md).
+  // Пусто — заявка копируется и открывается Direct. ТОКЕН БОТА СЮДА НЕ ПИСАТЬ.
+  bookingEndpoint: '',
 };
 
 // Работы для «Каталога образцов». Когда появятся фото — кладите их в public/works/

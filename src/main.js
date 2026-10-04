@@ -15,6 +15,7 @@ import { site, works } from './data/site.js';
 import { inkTrail } from './ui/ink-trail.js';
 import { weightLetters, clock } from './ui/hero.js';
 import { gallery, flashSheet, pills, plate } from './ui/gallery.js';
+import { flash, svgToUrl } from './data/flash.js';
 import { tryOnUI } from './ui/tryon-ui.js';
 import { booking } from './ui/booking.js';
 
@@ -49,7 +50,22 @@ pills($('.manifest'));
 plate($('[data-plate]'));
 const cards = gallery({ grid: $('[data-works]'), filter: $('[data-filter]'), works, lightbox: $('[data-lightbox]') });
 const tryon = tryOnUI($('[data-tryon]'));
+// ссылки на отдельную страницу примерочной — с текущим языком
+const tryonUrl = (design) => {
+  const q = new URLSearchParams();
+  if (design) q.set('design', design);
+  if (lang === 'en') q.set('lang', 'en');
+  const qs = q.toString();
+  return `tryon.html${qs ? `?${qs}` : ''}`;
+};
+$$('[data-tryon-link]').forEach((a) => (a.href = tryonUrl()));
+$('[data-cta-art]').innerHTML = `<img src="${svgToUrl(flash[0].svg)}" alt="" />`;
+const phone = matchMedia('(max-width: 800px)');
 flashSheet($('[data-flash]'), (id) => {
+  if (phone.matches) {
+    location.href = tryonUrl(id);
+    return;
+  }
   tryon.tryFlash(id);
   lenis.scrollTo('#tryon', { offset: -10 });
 });
@@ -193,7 +209,7 @@ if (!reduce) {
   gsap.fromTo(
     '[data-receipt]',
     { yPercent: -100 },
-    { yPercent: 0, ease: 'steps(14)', scrollTrigger: { trigger: '.care', start: 'top 70%', end: 'center 50%', scrub: true } },
+    { yPercent: 0, ease: 'steps(14)', scrollTrigger: { trigger: '.care__slot', start: 'top 85%', end: 'top 30%', scrub: true } },
   );
 }
 

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>3D-примірочна — VALOVA</title>
+    <meta name="description" content="Завантаж ескіз і приміряй татуювання на 3D-фігурі." />
+    <meta name="theme-color" content="#EEE8DC" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23EEE8DC' stroke='%2316151B' stroke-width='2'/%3E%3Cpath d='M9 9l7 15 7-15' fill='none' stroke='%23D23A1E' stroke-width='3'/%3E%3C/svg%3E" />
+  </head>
+  <body class="tp">
+    <header class="tp__bar">
+      <a class="tp__back mono" href="./" data-home><span aria-hidden="true">←</span> VALOVA</a>
+      <span class="tp__title mono" data-i18n="tpTitle">3D-примірочна</span>
+      <div class="lang mono" role="group" aria-label="Мова" data-i18n-attr="aria-label:langLabel">
+        <button type="button" data-lang="uk" lang="uk">UA</button>
+        <button type="button" data-lang="en" lang="en">EN</button>
+      </div>
+    </header>
+
+    <main class="tp__app" data-tryon>
+      <div class="tryon__stage tp__stage">
+        <div class="tryon__canvas" data-tryon-canvas>
+          <div class="tryon__placeholder mono" data-tryon-loading data-i18n="tryonLoading">завантажуємо фігуру…</div>
+        </div>
+        <div class="tryon__views tp__views mono" role="radiogroup" aria-label="Ракурс" data-i18n-attr="aria-label:viewsLabel" data-views></div>
+        <div class="tryon__zoom tp__zoom">
+          <button type="button" data-zoom="0.85" aria-label="Наблизити" data-i18n-attr="aria-label:zoomIn">+</button>
+          <button type="button" data-zoom="1.18" aria-label="Віддалити" data-i18n-attr="aria-label:zoomOut">−</button>
+          <button type="button" data-reset aria-label="Скинути вигляд" data-i18n-attr="aria-label:resetView">⟲</button>
+        </div>
+        <p class="tp__hint hand" data-i18n="tpHint">торкнись фігури — тату переїде туди</p>
+      </div>
+
+      <form class="tp__panel" data-panel>
+        <div class="tp__tabs mono" role="tablist">
+          <button type="button" role="tab" aria-selected="true" data-tab="sketch" data-i18n="tabSketch">Ескіз</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="fit" data-i18n="tabFit">Посадка</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="skin" data-i18n="tabSkin">Шкіра</button>
+        </div>
+
+        <section class="tp__pane" data-pane="sketch">
+          <label class="upload" data-drop>
+            <input type="file" accept="image/png,image/jpeg,image/webp" data-upload hidden />
+            <span class="upload__big" data-i18n="uploadBig">Завантажити свій</span>
+            <span class="upload__small mono" data-upload-hint data-i18n="uploadSmall">PNG/JPG · фото з паперу теж ок — фон приберемо</span>
+          </label>
+          <div class="sheet__designs tp__designs" data-designs></div>
+        </section>
+
+        <fieldset class="tp__pane" data-pane="fit" data-needs-tattoo hidden>
+          <p class="tp__current mono"><span data-current-title></span></p>
+          <label class="range">
+            <span class="mono" data-i18n="sizeLabel">Розмір</span>
+            <input type="range" min="3" max="30" step="0.5" data-prop="sizeCm" />
+            <output class="mono" data-out="sizeCm">10 см</output>
+          </label>
+          <label class="range">
+            <span class="mono" data-i18n="rotationLabel">Поворот</span>
+            <input type="range" min="-180" max="180" step="1" data-prop="angle" />
+            <output class="mono" data-out="angle">0°</output>
+          </label>
+          <div class="toggles">
+            <div class="seg mono" role="radiogroup" aria-label="Колір" data-i18n-attr="aria-label:colorLabel">
+              <button type="button" data-set="mono" data-val="false" data-i18n="optColor">колір</button>
+              <button type="button" data-set="mono" data-val="true" data-i18n="optMono">ч/б</button>
+            </div>
+            <div class="seg mono" role="radiogroup" aria-label="Стан" data-i18n-attr="aria-label:stateLabel">
+              <button type="button" data-set="state" data-val="fresh" data-i18n="optFresh">свіжа</button>
+              <button type="button" data-set="state" data-val="healed" data-i18n="optHealed">загоєна</button>
+            </div>
+          </div>
+          <div class="sheet__row">
+            <button type="button" class="link mono" data-add data-i18n="addTattoo">+ ще одне тату</button>
+            <button type="button" class="link mono" data-remove data-i18n="removeTattoo">видалити</button>
+          </div>
+        </fieldset>
+
+        <section class="tp__pane" data-pane="skin" hidden>
+          <div class="model-row">
+            <div class="seg mono" role="radiogroup" aria-label="Фігура" data-i18n-attr="aria-label:figureLabel">
+              <button type="button" data-sex="female" aria-checked="true" data-i18n="optShe">вона</button>
+              <button type="button" data-sex="male" data-i18n="optHe">він</button>
+            </div>
+            <div class="skins" data-skins></div>
+          </div>
+        </section>
+
+        <div class="tp__actions">
+          <button type="button" class="btn btn--ghost" data-download data-i18n="savePhoto">Завантажити фото</button>
+          <button type="button" class="btn" data-send data-i18n="tpSend">Надіслати заявку →</button>
+        </div>
+      </form>
+    </main>
+
+    <div class="tp__sheet" data-book-sheet hidden>
+      <div class="tp__sheet-card" role="dialog" aria-modal="true" aria-labelledby="tp-book-title">
+        <div class="tp__sheet-head">
+          <h2 id="tp-book-title" class="display" data-i18n="bookTitle">Розкажи<em class="serif"> ідею</em></h2>
+          <button type="button" class="link mono" data-book-close data-i18n="lbClose">закрити ✕</button>
+        </div>
+        <form class="book__form tp__form" data-book>
+          <div class="book__shot" data-shot hidden>
+            <img alt="Знімок з примірочної" data-i18n-attr="alt:shotTitle" data-shot-img />
+            <div>
+              <p class="mono" data-i18n="shotTitle">Знімок з примірочної</p>
+              <button type="button" class="link mono" data-shot-remove data-i18n="shotRemove">прибрати</button>
+            </div>
+          </div>
+          <label class="field field--wide">
+            <span class="mono" data-i18n="fIdea">Ідея</span>
+            <textarea name="idea" rows="2" maxlength="1500" placeholder="метелик на передпліччі, тонкою лінією…" data-i18n-attr="placeholder:fIdeaPh" required></textarea>
+          </label>
+          <label class="field">
+            <span class="mono" data-i18n="fZone">Зона</span>
+            <input name="zone" maxlength="80" placeholder="передпліччя" data-i18n-attr="placeholder:fZonePh" />
+          </label>
+          <label class="field">
+            <span class="mono" data-i18n="fSize">Розмір, см</span>
+            <input name="size" inputmode="decimal" maxlength="20" placeholder="10" />
+          </label>
+          <label class="field">
+            <span class="mono" data-i18n="fWhen">Зручні дні</span>
+            <input name="when" maxlength="120" placeholder="будні після 15:00" data-i18n-attr="placeholder:fWhenPh" />
+          </label>
+          <label class="field field--name">
+            <span class="mono" data-i18n="fName">Як до тебе звертатися</span>
+            <input name="name" autocomplete="given-name" maxlength="80" placeholder="Ім’я" data-i18n-attr="placeholder:fNamePh" required />
+          </label>
+          <label class="field field--contact">
+            <span class="mono" data-i18n="fContact">Instagram, Telegram або телефон</span>
+            <input name="contact" autocomplete="tel" maxlength="120" placeholder="@нік або +380…" data-i18n-attr="placeholder:fContactPh" required />
+          </label>
+          <label class="book__trap" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off" /></label>
+          <div class="book__send">
+            <button class="btn btn--big" type="submit" data-i18n="bookSubmit">Надіслати в Direct →</button>
+            <a class="link mono" data-direct hidden target="_blank" rel="noopener" data-i18n="bookDirect">або напиши в Direct ↗</a>
+            <p class="book__fine mono" data-book-status data-i18n="bookFine">Текст заявки скопіюється — залишиться вставити його в повідомлення.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/src/tryon-page.js"></script>
+  </body>
+</html>

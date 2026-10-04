@@ -1,0 +1,240 @@
+/* Страница 3D-примерочной: приложение на весь экран, сначала — телефон. */
+
+.tp {
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.tp__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  position: relative;
+  z-index: 3;
+}
+.tp__back {
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: none;
+}
+.tp__title {
+  margin-left: auto;
+  color: var(--ink-soft);
+  text-transform: none;
+}
+
+.tp__app {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+}
+
+.tryon__stage.tp__stage {
+  position: relative;
+  top: 0;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+.tp__views {
+  top: 10px;
+  bottom: auto;
+}
+.tp__zoom {
+  right: 12px;
+  top: auto;
+  bottom: 14px;
+  transform: none;
+}
+.tp__zoom button {
+  width: 44px;
+  height: 44px;
+}
+.tp__hint {
+  position: absolute;
+  left: 16px;
+  bottom: 18px;
+  max-width: 60%;
+  margin: 0;
+  font-size: 22px;
+  transform: rotate(-4deg);
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.tp__hint.is-gone {
+  opacity: 0;
+}
+
+.tp__panel {
+  background: var(--paper);
+  border-top: 1px solid var(--ink);
+  padding: 0 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  max-height: 48dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.tp__tabs {
+  display: flex;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--paper);
+  padding: 12px 0 10px;
+}
+.tp__tabs button {
+  flex: 1;
+  min-height: 44px;
+  border: 1px solid var(--ink);
+  border-radius: 99px;
+  background: transparent;
+  font-family: var(--f-mono);
+  font-size: 13px;
+}
+.tp__tabs button[aria-selected='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.tp__pane {
+  border: 0;
+  margin: 0;
+  padding: 4px 0 12px;
+  min-width: 0;
+}
+.tp__pane[disabled] {
+  opacity: 0.4;
+}
+.tp__current {
+  margin: 0 0 6px;
+  color: var(--flash);
+  text-transform: none;
+}
+.tp__designs {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* крупные элементы под палец */
+.tp .range {
+  grid-template-columns: 74px 1fr 56px;
+}
+.tp input[type='range'] {
+  height: 40px;
+}
+.tp input[type='range']::-webkit-slider-thumb {
+  width: 26px;
+  height: 26px;
+  margin-top: -13px;
+}
+.tp input[type='range']::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+}
+.tp .seg button {
+  min-height: 40px;
+  padding: 8px 14px;
+}
+.tp .skins button {
+  width: 40px;
+  height: 40px;
+}
+.tp .sheet__row .link {
+  padding: 10px 0;
+}
+.tp__actions {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 8px;
+  padding-top: 6px;
+}
+.tp__actions .btn {
+  min-height: 48px;
+  font-size: 12px;
+  padding: 10px 12px;
+}
+[data-book-close] {
+  white-space: nowrap;
+}
+
+/* шторка с заявкой */
+.tp__sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(22, 21, 27, 0);
+  transition: background 0.25s;
+}
+.tp__sheet.is-open {
+  background: rgba(22, 21, 27, 0.45);
+}
+.tp__sheet-card {
+  width: min(640px, 100%);
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+  border-radius: 18px 18px 0 0;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform 0.3s var(--ease);
+}
+.tp__sheet.is-open .tp__sheet-card {
+  transform: none;
+}
+.tp__sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+}
+.tp__sheet-head h2 {
+  margin: 0;
+  font-size: clamp(34px, 9vw, 56px);
+}
+.tp__form {
+  grid-template-columns: 1fr;
+  padding: 0;
+}
+.tp__form .field,
+.tp__form .field--name,
+.tp__form .field--contact {
+  grid-column: 1 / -1;
+}
+.tp__form .field input,
+.tp__form .field textarea {
+  font-size: 18px;
+}
+.tp__form .book__shot img {
+  width: 72px;
+  height: 90px;
+}
+.tp__form .book__send {
+  margin-top: 18px;
+}
+
+/* на большом экране — панель справа */
+@media (min-width: 900px) {
+  .tp__app {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 400px;
+  }
+  .tp__panel {
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid var(--ink);
+  }
+  .tp__sheet {
+    align-items: center;
+  }
+  .tp__sheet-card {
+    border-radius: 18px;
+  }
+}

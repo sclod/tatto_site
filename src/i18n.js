@@ -28,6 +28,17 @@ const S = {
   msgShot: { uk: '(додаю знімок з примірочної)', en: '(attaching a try-on snapshot)' },
   statusCopied: { uk: 'Текст скопійовано ✓ Встав його у відкритий чат', en: 'Text copied ✓ Paste it into the chat that opened' },
   statusShot: { uk: ' і прикріпи завантажений знімок.', en: ' and attach the saved snapshot.' },
+  submitBot: { uk: 'Надіслати заявку →', en: 'Send request →' },
+  fineBot: {
+    uk: 'Заявка прийде майстрині в Telegram — вона відповість туди, куди ти вказав(ла) контакт.',
+    en: 'Your request goes straight to the artist’s Telegram — she’ll reply via the contact you left.',
+  },
+  sending: { uk: 'Надсилаємо…', en: 'Sending…' },
+  sent: { uk: 'Заявку надіслано ✓ Майстриня напише тобі найближчим часом.', en: 'Request sent ✓ The artist will get back to you soon.' },
+  sendFail: {
+    uk: 'Не вийшло надіслати. Спробуй ще раз або напиши в Direct.',
+    en: 'Couldn’t send it. Try again or message on Instagram.',
+  },
   statusFail: { uk: 'Відкриваємо чат — напиши ідею, зону й розмір.', en: 'Opening the chat — write your idea, placement and size.' },
   // каталог и флеши
   photoSoon: { uk: 'фото скоро', en: 'photo soon' },
@@ -51,6 +62,8 @@ const S = {
   viewLeg: { uk: 'Нога', en: 'Leg' },
   viewNeck: { uk: 'Шия', en: 'Neck' },
   loadFail: { uk: 'не вдалося завантажити 3D — онови сторінку', en: 'couldn’t load 3D — refresh the page' },
+  uploadBad: { uk: 'Потрібен PNG, JPG або WEBP до 15 МБ', en: 'Use a PNG, JPG or WEBP up to 15 MB' },
+  uploadOk: { uk: 'PNG/JPG · фон приберемо автоматично', en: 'PNG/JPG · background removed automatically' },
   yourSketch: { uk: 'Твій ескіз', en: 'Your sketch' },
   skinPlaster: { uk: 'Гіпс', en: 'Plaster' },
   skinPorcelain: { uk: 'Порцеляна', en: 'Porcelain' },
@@ -68,7 +81,7 @@ export const t = (key, vars = {}) => (L(S[key]) ?? key).replace(/\{(\w+)\}/g, (_
 
 // Статичный текст страницы написан по-украински прямо в index.html;
 // для английского подменяем элементы с data-i18n / data-i18n-attr.
-export function translatePage() {
+export function translatePage({ title = 'title', description = 'description' } = {}) {
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
   if (lang === 'uk') return;
@@ -82,8 +95,8 @@ export function translatePage() {
       if (pageEn[key] !== undefined) el.setAttribute(attr, pageEn[key]);
     }
   });
-  document.title = pageEn.title;
-  document.querySelector('meta[name="description"]')?.setAttribute('content', pageEn.description);
+  document.title = pageEn[title];
+  document.querySelector('meta[name="description"]')?.setAttribute('content', pageEn[description]);
 }
 
 export function bindLangSwitch() {

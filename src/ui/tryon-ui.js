@@ -13,14 +13,22 @@ const VIEW_LIST = [
 
 const designOf = (f) => ({ src: svgToUrl(f.svg, '#FFFFFF'), title: f.title, size: f.size, mono: f.mono });
 
+const MAX_UPLOAD = 15 * 1024 * 1024;
+const UPLOAD_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+
 // Интерфейс «бланка примерки». Сам 3D-модуль (three.js) грузится лениво.
-export function tryOnUI(root) {
+// opts.zoom — разрешить зум колесом/щипком (на отдельной странице примерочной),
+// opts.eager — грузить 3D сразу, не дожидаясь прокрутки.
+export function tryOnUI(root, opts = {}) {
   const $ = (s) => root.querySelector(s);
   const $$ = (s) => [...root.querySelectorAll(s)];
   const host = $('[data-tryon-canvas]');
   const stage = root.querySelector('.tryon__stage');
+  // панель — это форма только ради семантики полей, отправлять её некуда
+  $('[data-panel]')?.addEventListener('submit', (e) => e.preventDefault());
   stage.setAttribute('data-no-ink', '');
-  $('[data-sheet-no]').textContent = `№ ${String(Math.floor(Math.random() * 9000) + 1000)}`;
+  const sheetNo = $('[data-sheet-no]');
+  if (sheetNo) sheetNo.textContent = `№ ${String(Math.floor(Math.random() * 9000) + 1000)}`;
 
   let app = null;
   let booting = null;
@@ -41,7 +49,8 @@ export function tryOnUI(root) {
     const t = st.selected;
     const fs = $('[data-needs-tattoo]');
     fs.disabled = !t;
-    $('[data-current-title]').textContent = t ? (lang === 'en' ? `“${t.title}”` : `«${t.title}»`) : '';
+    const cur = $('[data-current-title]');
+    if (cur) cur.textContent = t ? (lang === 'en' ? `“${t.title}”` : `«${t.title}»`) : '';
     if (!t) return;
     const size = $('[data-prop="sizeCm"]');
     const ang = $('[data-prop="angle"]');
@@ -61,7 +70,7 @@ export function tryOnUI(root) {
           (s) =>
             `<button type="button" role="radio" aria-label="${s.label}" title="${s.label}" data-skin="${s.id}" ${s.plaster ? 'data-plaster' : ''} style="background-color:${s.color}"></button>`,
         ).join('');
-        return TryOn.create(host, { onChange: render });
+        return TryOn.create(host, { onChange: render, zoom: Boolean(opts.zoom) });
       }).then((created) => {
         app = created;
         $('[data-tryon-loading]')?.remove();
@@ -78,7 +87,8 @@ export function tryOnUI(root) {
   }
 
   // грузим 3D заранее, когда до примерочной остаётся ~экран
-  new IntersectionObserver(
+  if (opts.eager) boot();
+  else new IntersectionObserver(
     ([e], obs) => {
       if (e.isIntersecting) {
         obs.disconnect();
@@ -143,10 +153,24 @@ export function tryOnUI(root) {
   // ——— загрузка своего эскиза ———
   const fileInput = $('[data-upload]');
   const drop = $('[data-drop]');
-  const takeFile = (file) => {
-    if (!file || !file.type.startsWith('image/')) return;
-    const name = file.name.replace(/\.[^.]+$/, '').slice(0, 24) || tr('yourSketch');
-    useDesign({ src: URL.createObjectURL(file), title: name, size: 10, mono: false });
+  const hint = $('[data-upload-hint]');
+  const takeFile = async (file) => {
+    if (!file) return;
+    // только растровые картинки разумного размера — без SVG и гигантских файлов
+    if (!UPLOAD_TYPES.includes(file.type) || file.size > MAX_UPLOAD) {
+      if (hint) hint.textContent = tr('uploadBad');
+      return;
+    }
+    if (hint) hint.textContent = tr('uploadOk');
+    const name = file.name.replace(/\.[^.]+$/, '').replace(/[^\p{L}\p{N} _-]/gu, '').slice(0, 24) || tr('yourSketch');
+    const url = URL.createObjectURL(file);
+    try {
+      await useDesign({ src: url, title: name, size: 10, mono: false });
+    } catch {
+      if (hint) hint.textContent = tr('uploadBad');
+    } finally {
+      URL.revokeObjectURL(url);
+    }
   };
   fileInput.addEventListener('change', () => takeFile(fileInput.files[0]));
   drop.addEventListener('dragover', (e) => {

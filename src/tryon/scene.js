@@ -47,7 +47,7 @@ export class TryOn {
     return new TryOn(host, body, opts);
   }
 
-  constructor(host, body, { onChange = () => {} } = {}) {
+  constructor(host, body, { onChange = () => {}, zoom = false } = {}) {
     this.host = host;
     this.data = body;
     this.onChange = onChange;
@@ -80,7 +80,9 @@ export class TryOn {
       enableDamping: true,
       dampingFactor: 0.08,
       enablePan: false,
-      enableZoom: false,
+      enableZoom: zoom,
+      minDistance: 0.25,
+      maxDistance: 4,
       rotateSpeed: 0.7,
       minPolarAngle: 0.3,
       maxPolarAngle: Math.PI - 0.5,
