@@ -4,27 +4,28 @@ import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { inkify, loadImage } from './ink.js';
 import { loadBody } from './body.js';
+import { t as tr } from '../i18n.js';
 import bodyUrl from './body.bin?url';
 
 export const SKINS = [
-  { id: 'plaster', label: 'Гипс', color: '#ECE6DC', plaster: true },
-  { id: 's1', label: 'Фарфор', color: '#F1D3BF' },
-  { id: 's2', label: 'Персик', color: '#E2B193' },
-  { id: 's3', label: 'Олива', color: '#C48A63' },
-  { id: 's4', label: 'Карамель', color: '#9A623F' },
-  { id: 's5', label: 'Какао', color: '#6B4029' },
-  { id: 's6', label: 'Эбони', color: '#3E261A' },
+  { id: 'plaster', label: tr('skinPlaster'), color: '#ECE6DC', plaster: true },
+  { id: 's1', label: tr('skinPorcelain'), color: '#F1D3BF' },
+  { id: 's2', label: tr('skinPeach'), color: '#E2B193' },
+  { id: 's3', label: tr('skinOlive'), color: '#C48A63' },
+  { id: 's4', label: tr('skinCaramel'), color: '#9A623F' },
+  { id: 's5', label: tr('skinCocoa'), color: '#6B4029' },
+  { id: 's6', label: tr('skinEbony'), color: '#3E261A' },
 ];
 
 // Ракурсы камеры: куда смотрим, с какого угла (азимут, ° от фронта), с какой дистанции.
 // x > 0 — левая рука/нога фигуры (справа для зрителя).
 export const VIEWS = {
-  full: { label: 'Целиком', target: [0, 0.8, 0], az: 12, el: 4, dist: null },
-  arm: { label: 'Рука', target: [0.34, 1.04, 0.02], az: -32, el: 10, dist: 0.8 },
-  back: { label: 'Спина', target: [0, 1.17, 0], az: 180, el: 4, dist: 1.05 },
-  chest: { label: 'Грудь', target: [0, 1.24, 0.04], az: -10, el: 2, dist: 0.85 },
-  leg: { label: 'Нога', target: [0.1, 0.5, 0.02], az: 24, el: 6, dist: 1.0 },
-  neck: { label: 'Шея', target: [0, 1.42, 0], az: 40, el: 4, dist: 0.6 },
+  full: { target: [0, 0.8, 0], az: 12, el: 4, dist: null },
+  arm: { target: [0.34, 1.04, 0.02], az: -32, el: 10, dist: 0.8 },
+  back: { target: [0, 1.17, 0], az: 180, el: 4, dist: 1.05 },
+  chest: { target: [0, 1.24, 0.04], az: -10, el: 2, dist: 0.85 },
+  leg: { target: [0.1, 0.5, 0.02], az: 24, el: 6, dist: 1.0 },
+  neck: { target: [0, 1.42, 0], az: 40, el: 4, dist: 0.6 },
 };
 
 // Точки «по умолчанию» для новой тату: луч из origin в сторону target.
@@ -261,7 +262,7 @@ export class TryOn {
       if (!hit || !this.anchorFromHit(t, hit)) return null;
       this.tattoos.push(t);
     }
-    Object.assign(t, { img, title: design.title || 'Ваш эскиз', mono: design.mono ?? t.mono ?? false });
+    Object.assign(t, { img, title: design.title || tr('yourSketch'), mono: design.mono ?? t.mono ?? false });
     if (design.size && replace) t.sizeCm = design.size;
     this.selected = t;
     this.repaint(t);
@@ -650,10 +651,10 @@ export class TryOn {
     ctx.font = '22px "JetBrains Mono", monospace';
     const t = this.selected;
     ctx.textAlign = 'right';
-    ctx.fillText(t ? `${t.title} · ${t.sizeCm} см` : 'примерка', W - 48, H + 62);
+    ctx.fillText(t ? `${t.title} · ${t.sizeCm} ${tr('cm')}` : tr('shotDefault'), W - 48, H + 62);
     ctx.fillStyle = '#D23A1E';
     ctx.font = '30px Caveat, cursive';
-    ctx.fillText('примерено на сайте ↗', W - 48, H + 98);
+    ctx.fillText(tr('shotNote'), W - 48, H + 98);
     return c.toDataURL('image/jpeg', 0.9);
   }
 }

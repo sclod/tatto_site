@@ -1,3 +1,5 @@
+import { t } from '../i18n.js';
+
 // Заявка без бэкенда: собираем текст, копируем и открываем Direct / Telegram.
 export function booking(form, site) {
   const shotBox = form.querySelector('[data-shot]');
@@ -19,7 +21,7 @@ export function booking(form, site) {
     shotBox.hidden = false;
     if (d.zone && !form.zone.value) form.zone.value = d.zone.toLowerCase();
     if (d.sizeCm) form.size.value = d.sizeCm;
-    if (d.title && !form.idea.value) form.idea.value = `Хочу «${d.title}» — примерил(а) на сайте`;
+    if (d.title && !form.idea.value) form.idea.value = t('ideaFromShot', { title: d.title });
   });
 
   form.querySelector('[data-shot-remove]').addEventListener('click', () => {
@@ -30,12 +32,12 @@ export function booking(form, site) {
   const compose = () => {
     const f = new FormData(form);
     const lines = [
-      `Привет! Меня зовут ${f.get('name') || '…'}.`,
-      `Идея: ${f.get('idea') || '—'}`,
-      f.get('zone') && `Зона: ${f.get('zone')}`,
-      f.get('size') && `Размер: ~${f.get('size')} см`,
-      f.get('when') && `Удобно: ${f.get('when')}`,
-      shot && '(прикладываю снимок из примерочной)',
+      t('msgHi', { name: f.get('name') || '…' }),
+      t('msgIdea', { v: f.get('idea') || '—' }),
+      f.get('zone') && t('msgZone', { v: f.get('zone') }),
+      f.get('size') && t('msgSize', { v: f.get('size') }),
+      f.get('when') && t('msgWhen', { v: f.get('when') }),
+      shot && t('msgShot'),
     ];
     return lines.filter(Boolean).join('\n');
   };
@@ -55,12 +57,10 @@ export function booking(form, site) {
     if (shot) {
       const a = document.createElement('a');
       a.href = shot;
-      a.download = 'valova-primerka.jpg';
+      a.download = t('shotFile');
       a.click();
     }
-    status.textContent = ok
-      ? 'Текст скопирован ✓ Вставь его в открывшийся чат' + (shot ? ' и приложи скачанный снимок.' : '.')
-      : 'Открываем чат — напиши идею, зону и размер.';
+    status.textContent = ok ? t('statusCopied') + (shot ? t('statusShot') : '.') : t('statusFail');
     window.open(`https://ig.me/m/${site.instagram}`, '_blank', 'noopener');
   });
 }

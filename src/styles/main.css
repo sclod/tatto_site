@@ -215,6 +215,28 @@ button {
   transform: scaleX(1);
   transform-origin: left;
 }
+.lang {
+  display: flex;
+  gap: 2px;
+}
+.lang button {
+  background: none;
+  border: 0;
+  padding: 4px 6px;
+  font: inherit;
+  color: inherit;
+  opacity: 0.45;
+  border-radius: 99px;
+  transition: opacity 0.2s;
+}
+.lang button:hover,
+.lang button[aria-pressed='true'] {
+  opacity: 1;
+}
+.lang button[aria-pressed='true'] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .nav__time {
   opacity: 0.6;
   min-width: 9ch;
@@ -736,7 +758,7 @@ section {
   gap: 8px;
   width: 100%;
 }
-.sheet legend span {
+.sheet legend [data-current-title] {
   color: var(--flash);
   text-transform: none;
   font-weight: 400;
@@ -1367,7 +1389,7 @@ input[type='range']::-moz-range-thumb {
   .nav__time {
     display: none;
   }
-  .nav__cta {
+  .lang {
     margin-left: auto;
   }
   .hero__meta {

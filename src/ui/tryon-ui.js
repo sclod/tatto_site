@@ -1,13 +1,14 @@
 import { flash, svgToUrl } from '../data/flash.js';
+import { t as tr, lang } from '../i18n.js';
 
 // ключи совпадают с VIEWS в tryon/scene.js
 const VIEW_LIST = [
-  ['full', 'Целиком'],
-  ['arm', 'Рука'],
-  ['back', 'Спина'],
-  ['chest', 'Грудь'],
-  ['leg', 'Нога'],
-  ['neck', 'Шея'],
+  ['full', tr('viewFull')],
+  ['arm', tr('viewArm')],
+  ['back', tr('viewBack')],
+  ['chest', tr('viewChest')],
+  ['leg', tr('viewLeg')],
+  ['neck', tr('viewNeck')],
 ];
 
 const designOf = (f) => ({ src: svgToUrl(f.svg, '#FFFFFF'), title: f.title, size: f.size, mono: f.mono });
@@ -40,13 +41,13 @@ export function tryOnUI(root) {
     const t = st.selected;
     const fs = $('[data-needs-tattoo]');
     fs.disabled = !t;
-    $('[data-current-title]').textContent = t ? `«${t.title}»` : '';
+    $('[data-current-title]').textContent = t ? (lang === 'en' ? `“${t.title}”` : `«${t.title}»`) : '';
     if (!t) return;
     const size = $('[data-prop="sizeCm"]');
     const ang = $('[data-prop="angle"]');
     if (document.activeElement !== size) size.value = t.sizeCm;
     if (document.activeElement !== ang) ang.value = t.angle;
-    $('[data-out="sizeCm"]').textContent = `${t.sizeCm} см`;
+    $('[data-out="sizeCm"]').textContent = `${t.sizeCm} ${tr('cm')}`;
     $('[data-out="angle"]').textContent = `${t.angle}°`;
     $$('[data-set="mono"]').forEach((b) => b.setAttribute('aria-checked', String(t.mono) === b.dataset.val));
     $$('[data-set="state"]').forEach((b) => b.setAttribute('aria-checked', t.state === b.dataset.val));
@@ -69,7 +70,7 @@ export function tryOnUI(root) {
       }).catch((err) => {
         booting = null;
         const ph = $('[data-tryon-loading]');
-        if (ph) ph.textContent = 'не удалось загрузить 3D — обнови страницу';
+        if (ph) ph.textContent = tr('loadFail');
         throw err;
       });
     }
@@ -113,7 +114,7 @@ export function tryOnUI(root) {
     else if ('download' in ds) {
       const link = document.createElement('a');
       link.href = a.snapshot();
-      link.download = 'valova-primerka.jpg';
+      link.download = tr('shotFile');
       link.click();
     } else if ('send' in ds) {
       const t = a.selected;
@@ -133,7 +134,7 @@ export function tryOnUI(root) {
   let raf = 0;
   $$('[data-prop]').forEach((input) =>
     input.addEventListener('input', () => {
-      $(`[data-out="${input.dataset.prop}"]`).textContent = input.dataset.prop === 'sizeCm' ? `${input.value} см` : `${input.value}°`;
+      $(`[data-out="${input.dataset.prop}"]`).textContent = input.dataset.prop === 'sizeCm' ? `${input.value} ${tr('cm')}` : `${input.value}°`;
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => app?.update({ [input.dataset.prop]: +input.value }));
     }),
@@ -144,7 +145,7 @@ export function tryOnUI(root) {
   const drop = $('[data-drop]');
   const takeFile = (file) => {
     if (!file || !file.type.startsWith('image/')) return;
-    const name = file.name.replace(/\.[^.]+$/, '').slice(0, 24) || 'Ваш эскиз';
+    const name = file.name.replace(/\.[^.]+$/, '').slice(0, 24) || tr('yourSketch');
     useDesign({ src: URL.createObjectURL(file), title: name, size: 10, mono: false });
   };
   fileInput.addEventListener('change', () => takeFile(fileInput.files[0]));

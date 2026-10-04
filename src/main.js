@@ -10,6 +10,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
+import { translatePage, bindLangSwitch, L, lang } from './i18n.js';
 import { site, works } from './data/site.js';
 import { inkTrail } from './ui/ink-trail.js';
 import { weightLetters, clock } from './ui/hero.js';
@@ -32,10 +33,14 @@ addEventListener('modal:open', () => lenis.stop());
 addEventListener('modal:close', () => lenis.start());
 addEventListener('layout:change', () => ScrollTrigger.refresh());
 
+// ——— язык: статичный текст страницы — до запуска остальных модулей ———
+translatePage();
+bindLangSwitch();
+
 // ——— статичные данные ———
 $$('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
-$('[data-city]').textContent = `${site.city} · ${site.studio}`;
-clock($('[data-clock]'), site.timezone, site.city);
+$('[data-city]').textContent = `${L(site.city)} · ${L(site.studio)}`;
+clock($('[data-clock]'), site.timezone, L(site.city), lang === 'uk' ? 'uk-UA' : 'en-GB');
 
 // ——— модули ———
 inkTrail($('.ink-trail'));

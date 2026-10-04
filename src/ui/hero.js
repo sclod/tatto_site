@@ -52,8 +52,8 @@ export function weightLetters(el) {
   return letters.map((l) => l.el);
 }
 
-export function clock(el, tz, city) {
-  const fmt = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: tz });
+export function clock(el, tz, city, locale) {
+  const fmt = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone: tz });
   const draw = () => (el.textContent = `${city} ${fmt.format(new Date())}`);
   draw();
   setInterval(draw, 20_000);

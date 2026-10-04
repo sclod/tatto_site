@@ -1,6 +1,8 @@
 // Демо-эскизы (флеши), нарисованные кодом. Заменяются на реальные эскизы мастера:
 // положите PNG в public/flash/ и укажите `src: 'flash/имя.png'` вместо `svg`.
 
+import { L, t } from '../i18n.js';
+
 const INK = '#16151B';
 const RED = '#D23A1E';
 
@@ -84,17 +86,19 @@ const heart = wrap(`
   <path d="M166 112 L184 112 L176 123 L184 134 L166 134 Z" fill="__PAPER__"/>
   <path d="M30 106 H170 V128 H30 Z" fill="__PAPER__"/>
   <path d="M30 128 L34 134 M170 128 L166 134"/>
-  <text x="100" y="123.5" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="700" letter-spacing="2.5" fill="${INK}" stroke="none">НАВСЕГДА</text>
+  <text x="100" y="123.5" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="700" letter-spacing="2.5" fill="${INK}" stroke="none">${t('forever')}</text>
 `);
 
+const price = (n) => ({ uk: `від ${n.toLocaleString('uk-UA')} ₴`, en: `from ₴${n.toLocaleString('en-US')}` });
+
 export const flash = [
-  { id: 'moth', title: 'Ночной мотылёк', price: 'от 7 000 ₽', size: 7, svg: moth, mono: true },
-  { id: 'snake', title: 'Змея-оберег', price: 'от 9 000 ₽', size: 9, svg: snake, mono: false },
-  { id: 'flower', title: 'Полевой цветок', price: 'от 5 000 ₽', size: 8, svg: flower, mono: true },
-  { id: 'eye', title: 'Всевидящее око', price: 'от 8 000 ₽', size: 7, svg: eye, mono: true },
-  { id: 'moon', title: 'Луна и искры', price: 'от 6 000 ₽', size: 6, svg: moon, mono: true },
-  { id: 'heart', title: 'Навсегда', price: 'от 8 000 ₽', size: 7, svg: heart, mono: false },
-];
+  { id: 'moth', title: { uk: 'Нічний метелик', en: 'Night moth' }, price: price(2500), size: 7, svg: moth, mono: true },
+  { id: 'snake', title: { uk: 'Змія-оберіг', en: 'Guardian snake' }, price: price(3500), size: 9, svg: snake, mono: false },
+  { id: 'flower', title: { uk: 'Польова квітка', en: 'Wildflower' }, price: price(2000), size: 8, svg: flower, mono: true },
+  { id: 'eye', title: { uk: 'Всевидюче око', en: 'All-seeing eye' }, price: price(3000), size: 7, svg: eye, mono: true },
+  { id: 'moon', title: { uk: 'Місяць та іскри', en: 'Moon and sparks' }, price: price(2200), size: 6, svg: moon, mono: true },
+  { id: 'heart', title: { uk: 'Назавжди', en: 'Forever' }, price: price(3000), size: 7, svg: heart, mono: false },
+].map((f) => ({ ...f, title: L(f.title), price: L(f.price) }));
 
 // __PAPER__ — «пустоты» внутри рисунка: на сайте это цвет бумаги,
 // в примерочной — белый (при умножении белый не меняет кожу).
