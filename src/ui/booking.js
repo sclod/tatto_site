@@ -76,6 +76,8 @@ export function booking(form, site) {
     }
   }
 
+  const SEND_TIMEOUT = 20_000;
+
   async function sendToBot() {
     const payload = {
       name: field('name'),
@@ -90,12 +92,20 @@ export function booking(form, site) {
       website: field('website'), // ловушка для ботов, у людей всегда пустая
       elapsed: Date.now() - startedAt,
     };
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(String(res.status));
+    // если сервер завис — не держим кнопку заблокированной вечно
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), SEND_TIMEOUT);
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   form.addEventListener('submit', async (e) => {
@@ -103,15 +113,17 @@ export function booking(form, site) {
     if (!form.reportValidity()) return;
 
     if (!endpoint) {
-      const ok = await copy(compose());
+      // копирование и открытие чата запускаем сразу, в том же нажатии:
+      // Safari блокирует новые окна, открытые после ожидания
+      const copied = copy(compose());
       if (shot) {
         const a = document.createElement('a');
         a.href = shot;
         a.download = t('shotFile');
         a.click();
       }
-      status.textContent = ok ? t('statusCopied') + (shot ? t('statusShot') : '.') : t('statusFail');
       window.open(dm, '_blank', 'noopener');
+      status.textContent = (await copied) ? t('statusCopied') + (shot ? t('statusShot') : '.') : t('statusFail');
       return;
     }
 

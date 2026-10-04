@@ -34,9 +34,11 @@ export function weightLetters(el) {
   const tick = (time) => {
     requestAnimationFrame(tick);
     if (!visible) return;
+    // сначала читаем все размеры, потом пишем стили — один пересчёт вёрстки за кадр, а не шесть
+    const rects = pointer && !touch ? letters.map((l) => l.el.getBoundingClientRect()) : null;
     letters.forEach((l, i) => {
-      if (pointer && !touch) {
-        const r = l.el.getBoundingClientRect();
+      if (rects) {
+        const r = rects[i];
         const d = Math.hypot(pointer.x - (r.left + r.width / 2), pointer.y - (r.top + r.height / 2));
         const fall = Math.max(260, innerWidth * 0.22);
         l.target = REST - 340 + 680 * Math.exp(-((d / fall) ** 2));
@@ -45,7 +47,12 @@ export function weightLetters(el) {
         l.target = REST + 300 * Math.sin(time / 900 - i * 0.7);
       }
       l.w += (l.target - l.w) * 0.12;
-      l.el.style.fontVariationSettings = `'wght' ${l.w.toFixed(0)}`;
+      // пишем стиль только при заметном изменении — меньше пересчётов вёрстки
+      const w = Math.round(l.w / 4) * 4;
+      if (w !== l.shown) {
+        l.shown = w;
+        l.el.style.fontVariationSettings = `'wght' ${w}`;
+      }
     });
   };
   requestAnimationFrame(tick);

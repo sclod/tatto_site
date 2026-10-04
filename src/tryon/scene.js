@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 import { inkify, loadImage } from './ink.js';
 import { loadBody } from './body.js';
 import { t as tr } from '../i18n.js';
@@ -37,6 +38,13 @@ const SPOTS = [
   { origin: [-0.37, 1.0, 1], target: [-0.37, 1.0, 0] }, // другое предплечье
 ];
 
+// BVH-дерево по треугольникам тела: луч от пальца/курсора проверяет десятки
+// треугольников вместо ~100 тысяч — перетаскивание тату не тормозит на телефоне.
+THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
+THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+THREE.Mesh.prototype.raycast = acceleratedRaycast;
+
+const COARSE = matchMedia('(pointer: coarse)').matches;
 const UP = new THREE.Vector3(0, 1, 0);
 const tmpV = new THREE.Vector3();
 const tri = new THREE.Triangle();
@@ -59,7 +67,7 @@ export class TryOn {
     this.visible = true;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, COARSE ? 1.75 : 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
     renderer.shadowMap.enabled = true;
@@ -87,12 +95,15 @@ export class TryOn {
       minPolarAngle: 0.3,
       maxPolarAngle: Math.PI - 0.5,
     });
+    // рисуем кадр только когда что-то изменилось — в покое GPU не греет телефон
+    this.dirty = true;
+    this.controls.addEventListener('change', () => this.invalidate());
 
     scene.add(new THREE.HemisphereLight(0xfff4e6, 0x6b5a4a, 0.85));
     const key = new THREE.DirectionalLight(0xfff1e0, 2.3);
     key.position.set(1.6, 3.2, 2.4);
     key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.mapSize.set(COARSE ? 1024 : 2048, COARSE ? 1024 : 2048);
     key.shadow.camera.left = key.shadow.camera.bottom = -1.1;
     key.shadow.camera.right = key.shadow.camera.top = 1.1;
     key.shadow.bias = -0.0005;
@@ -122,6 +133,7 @@ export class TryOn {
     scene.add(this.bracket);
 
     this.raycaster = new THREE.Raycaster();
+    this.raycaster.firstHitOnly = true; // нам всегда нужна только ближайшая точка
     this.pointer = new THREE.Vector2();
     this.bindPointer();
 
@@ -148,6 +160,10 @@ export class TryOn {
     this.scene.add(plinth, floor);
   }
 
+  invalidate() {
+    this.dirty = true;
+  }
+
   setSex(sex, { silent = false } = {}) {
     this.sex = sex;
     const geo = this.body.geometry;
@@ -156,7 +172,10 @@ export class TryOn {
     geo.computeVertexNormals();
     geo.computeBoundingBox();
     geo.computeBoundingSphere();
+    if (geo.boundsTree) geo.disposeBoundsTree();
+    geo.computeBoundsTree();
     this.indexFaces(geo);
+    this.invalidate();
     // тату «приклеены» к треугольнику — после смены фигуры остаются на том же месте
     for (const t of this.tattoos) {
       this.pointFromAnchor(t);
@@ -171,6 +190,7 @@ export class TryOn {
     this.skinMat.roughness = s.plaster ? 0.92 : 0.58;
     this.skinMat.sheen = s.plaster ? 0 : 0.45;
     this.skinMat.sheenColor.set(s.plaster ? '#ffffff' : '#ff9c7d');
+    this.invalidate();
   }
 
   setSkin(id) {
@@ -283,6 +303,7 @@ export class TryOn {
       t.mesh.material.map = t.texture;
       t.mesh.material.needsUpdate = true;
     }
+    this.invalidate();
   }
 
   rebuild(t) {
@@ -369,6 +390,7 @@ export class TryOn {
     }
     t.basis = basis;
     if (t === this.selected) this.placeBracket(t);
+    this.invalidate();
   }
 
   // На вытянутых частях тела (рука, нога, шея) «верх» тату идёт вдоль кости:
@@ -435,6 +457,7 @@ export class TryOn {
 
   placeBracket(t) {
     const b = this.bracket;
+    this.invalidate();
     if (!t) return (b.visible = false);
     b.visible = true;
     b.position.copy(t.point).addScaledVector(t.normal, 0.004);
@@ -468,6 +491,7 @@ export class TryOn {
     t.texture.dispose();
     this.tattoos = this.tattoos.filter((x) => x !== t);
     this.select(this.tattoos[this.tattoos.length - 1] || null);
+    this.invalidate();
   }
 
   emit() {
@@ -519,6 +543,7 @@ export class TryOn {
     const off = this.camera.position.clone().sub(c.target);
     const len = THREE.MathUtils.clamp(off.length() * f, 0.25, this.fullDist() * 1.2);
     this.camera.position.copy(c.target).addScaledVector(off.normalize(), len);
+    this.invalidate();
   }
 
   resetView() {
@@ -577,6 +602,7 @@ export class TryOn {
       toNdc(e);
       tmpV.set(this.pointer.x * 0.6, this.pointer.y * 0.5 + 0.1, 0.6).applyMatrix4(this.camera.matrixWorld);
       this.cursorLight.position.copy(tmpV);
+      this.invalidate();
       if (drag) return moveTo(drag);
       if (e.pointerType === 'mouse') el.style.cursor = hitTattoo() ? 'grab' : 'crosshair';
     });
@@ -605,6 +631,7 @@ export class TryOn {
     this.camera.aspect = w / h;
     this.camera.fov = w / h < 0.8 ? 38 : 30;
     this.camera.updateProjectionMatrix();
+    this.invalidate();
   }
 
   frame() {
@@ -621,22 +648,33 @@ export class TryOn {
       );
       this.camera.position.setFromSpherical(s).add(this.controls.target);
       if (f.t >= 1) this.fly = null;
+      this.dirty = true;
     }
-    this.controls.update();
+    this.controls.update(); // при движении/инерции сам вызовет invalidate через 'change'
+    if (!this.dirty) return;
+    this.dirty = false;
+    this.updateBracketVisibility();
     this.renderer.render(this.scene, this.camera);
+  }
+
+  // рамка выбранной тату рисуется поверх всего — прячем её, когда тату на обратной стороне тела
+  updateBracketVisibility() {
+    const t = this.selected;
+    if (!t || !t.normal) return (this.bracket.visible = false);
+    this.bracket.visible = tmpV.copy(this.camera.position).sub(t.point).dot(t.normal) > 0;
   }
 
   setVisible(v) {
     this.visible = v;
+    if (v) this.invalidate();
   }
 
   // Снимок примерки на «бумаге» с подписью — для скачивания и заявки.
   snapshot() {
-    const bv = this.bracket.visible;
     this.bracket.visible = false;
     this.renderer.render(this.scene, this.camera);
     const src = this.renderer.domElement;
-    this.bracket.visible = bv;
+    this.invalidate(); // следующий кадр вернёт рамку
 
     const W = 1080;
     const H = Math.round((W * src.height) / src.width);

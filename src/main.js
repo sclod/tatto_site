@@ -185,24 +185,22 @@ if (!reduce) {
   });
 
   // горизонтальная лента флешей (только десктоп)
-  ScrollTrigger.matchMedia({
-    '(min-width: 801px)': () => {
-      const track = $('[data-flash]');
-      const dist = () => Math.max(0, track.scrollWidth - innerWidth);
-      const tween = gsap.to(track, {
-        x: () => -dist(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.flash__pin',
-          start: 'top top',
-          end: () => `+=${dist()}`,
-          pin: true,
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-        },
-      });
-      return () => tween.kill();
-    },
+  gsap.matchMedia().add('(min-width: 801px)', () => {
+    // всё, что создано внутри, gsap сам откатит при переходе на узкий экран
+    const track = $('[data-flash]');
+    const dist = () => Math.max(0, track.scrollWidth - innerWidth);
+    gsap.to(track, {
+      x: () => -dist(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.flash__pin',
+        start: 'top top',
+        end: () => `+=${dist()}`,
+        pin: true,
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+      },
+    });
   });
 
   // чек «печатается» из кассы

@@ -336,12 +336,19 @@ button {
   100% { transform: scaleX(0); transform-origin: right; }
 }
 
+/* «рис. 1» и штамп стоят в общем потоке над именем: на невысоком экране
+   hero просто становится выше, а не наезжает на VALOVA */
+.hero__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--gutter);
+  margin: clamp(16px, 4vh, 48px) 0 clamp(20px, 4vh, 48px);
+}
 .hero__plate {
-  position: absolute;
-  left: 41%;
-  top: 13vh;
+  position: relative;
   width: clamp(150px, 15vw, 240px);
-  margin: 0;
+  margin: 0 0 0 calc(41% - var(--gutter));
 }
 .hero__plate svg {
   width: 100%;
@@ -384,9 +391,9 @@ button {
 }
 
 .stamp {
-  position: absolute;
-  right: calc(var(--gutter) + 2vw);
-  top: 18vh;
+  position: relative;
+  flex: none;
+  margin: 3vh 2vw 0 0;
   width: clamp(110px, 13vw, 190px);
   aspect-ratio: 1;
   display: grid;
@@ -527,7 +534,7 @@ section {
   padding: 7px 14px;
   transition: background 0.25s, color 0.25s;
 }
-.chips button[aria-selected='true'] {
+.chips button[aria-pressed='true'] {
   background: var(--ink);
   color: var(--paper);
 }
@@ -721,9 +728,8 @@ section {
   color: var(--paper);
 }
 .tryon__full {
-  position: absolute;
-  right: 18px;
-  top: 18px;
+  justify-self: end;
+  grid-column: 2;
   background: var(--paper);
   border: 1px solid var(--ink);
   border-radius: 99px;
@@ -1449,13 +1455,11 @@ input[type='range']::-moz-range-thumb {
     justify-self: end;
   }
   .stamp {
-    top: 120px;
-    right: var(--gutter);
+    margin: 0;
     width: 104px;
   }
   .hero__plate {
-    left: var(--gutter);
-    top: 120px;
+    margin: 0;
     width: 34vw;
   }
   .hero__plate figcaption {
@@ -1463,12 +1467,12 @@ input[type='range']::-moz-range-thumb {
     font-size: 10px;
   }
   .hero__plate .hand {
-    left: auto;
-    right: -4px;
-    top: auto;
-    bottom: -64px;
+    position: static;
+    display: block;
+    margin-top: 10px;
     padding-left: 0;
     transform: rotate(-4deg);
+    transform-origin: left;
   }
   .hero__plate .hand::before {
     display: none;
@@ -1507,7 +1511,8 @@ input[type='range']::-moz-range-thumb {
     border-radius: 200px 200px 14px 14px;
   }
   /* на телефоне 3D открывается отдельной страницей на весь экран */
-  .tryon__app {
+  .tryon__app,
+  .tryon__full {
     display: none;
   }
   .tryon__cta {

@@ -18,6 +18,10 @@ const MIN_FILL_MS = 3000; // форму быстрее 3 секунд запол
 const memoryHits = new Map();
 function memoryLimited(ip) {
   const now = Date.now();
+  // не даём карте расти бесконечно: время от времени выкидываем старые записи
+  if (memoryHits.size > 5000) {
+    for (const [k, v] of memoryHits) if (!v.some((t) => now - t < 600_000)) memoryHits.delete(k);
+  }
   const hits = (memoryHits.get(ip) || []).filter((t) => now - t < 600_000);
   hits.push(now);
   memoryHits.set(ip, hits);
@@ -57,6 +61,9 @@ export default {
       return reply(429, { ok: false, error: 'rate' });
     }
 
+    // размер проверяем до чтения тела, чтобы огромный запрос не забил память воркера
+    const declared = Number(request.headers.get('Content-Length') || 0);
+    if (declared > MAX_BODY) return reply(413, { ok: false, error: 'size' });
     const raw = await request.text();
     if (raw.length > MAX_BODY) return reply(413, { ok: false, error: 'size' });
     let data;

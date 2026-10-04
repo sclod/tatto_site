@@ -1,5 +1,6 @@
 import { flash, svgToUrl } from '../data/flash.js';
 import { t as tr, lang } from '../i18n.js';
+import { esc } from './esc.js';
 
 // ключи совпадают с VIEWS в tryon/scene.js
 const VIEW_LIST = [
@@ -39,7 +40,7 @@ export function tryOnUI(root, opts = {}) {
     ([k, l]) => `<button type="button" role="radio" aria-checked="${k === 'arm'}" data-view="${k}">${l}</button>`,
   ).join('');
   $('[data-designs]').innerHTML = flash
-    .map((f) => `<button type="button" data-design="${f.id}" title="${f.title}"><img src="${svgToUrl(f.svg, '#EEE8DC')}" alt="${f.title}" /></button>`)
+    .map((f) => `<button type="button" data-design="${f.id}" title="${esc(f.title)}"><img src="${svgToUrl(f.svg, '#EEE8DC')}" alt="${esc(f.title)}" /></button>`)
     .join('');
 
   const render = (st) => {
@@ -68,7 +69,7 @@ export function tryOnUI(root, opts = {}) {
       booting = import('../tryon/scene.js').then(({ TryOn, SKINS }) => {
         $('[data-skins]').innerHTML = SKINS.map(
           (s) =>
-            `<button type="button" role="radio" aria-label="${s.label}" title="${s.label}" data-skin="${s.id}" ${s.plaster ? 'data-plaster' : ''} style="background-color:${s.color}"></button>`,
+            `<button type="button" role="radio" aria-label="${esc(s.label)}" title="${esc(s.label)}" data-skin="${s.id}" ${s.plaster ? 'data-plaster' : ''} style="background-color:${s.color}"></button>`,
         ).join('');
         return TryOn.create(host, { onChange: render, zoom: Boolean(opts.zoom) });
       }).then((created) => {
@@ -98,17 +99,22 @@ export function tryOnUI(root, opts = {}) {
     { rootMargin: '100% 0px' },
   ).observe(root);
 
-  const useDesign = async (d, opts = { replace: true }) => {
+  const useDesign = async (d, addOpts = { replace: true }) => {
     lastDesign = d;
     const a = await boot();
-    await a.addTattoo(d, opts);
+    await a.addTattoo(d, addOpts);
   };
 
   // ——— события ———
   root.addEventListener('click', async (e) => {
     const b = e.target.closest('button');
     if (!b || !root.contains(b)) return;
-    const a = await boot();
+    let a;
+    try {
+      a = await boot();
+    } catch {
+      return; // сообщение об ошибке уже показано на месте сцены
+    }
     const ds = b.dataset;
     if (ds.view) a.setView(ds.view);
     else if (ds.sex) a.setSex(ds.sex);
@@ -163,14 +169,20 @@ export function tryOnUI(root, opts = {}) {
     }
     if (hint) hint.textContent = tr('uploadOk');
     const name = file.name.replace(/\.[^.]+$/, '').replace(/[^\p{L}\p{N} _-]/gu, '').slice(0, 24) || tr('yourSketch');
+    // декодируем сразу и держим саму картинку, а не blob-ссылку:
+    // ссылку освобождаем, а «+ ще одне тату» потом берёт уже готовое изображение
     const url = URL.createObjectURL(file);
+    const img = new Image();
     try {
-      await useDesign({ src: url, title: name, size: 10, mono: false });
+      img.src = url;
+      await img.decode();
     } catch {
       if (hint) hint.textContent = tr('uploadBad');
+      return;
     } finally {
       URL.revokeObjectURL(url);
     }
+    await useDesign({ img, title: name, size: 10, mono: false }).catch(() => {});
   };
   fileInput.addEventListener('change', () => takeFile(fileInput.files[0]));
   drop.addEventListener('dragover', (e) => {

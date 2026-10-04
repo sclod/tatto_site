@@ -139,6 +139,7 @@ export const pageEn = {
   marquee: 'FOREVER —',
   toTop: 'back to top ↑',
   lbClose: 'close ✕',
+  lbLabel: 'Work',
   lbPrev: 'Previous',
   lbNext: 'Next',
 };

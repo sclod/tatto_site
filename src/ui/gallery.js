@@ -1,17 +1,18 @@
 import { flash, svgToUrl, paintSvg } from '../data/flash.js';
 import { L, t, lang } from '../i18n.js';
+import { esc } from './esc.js';
 
 const byId = Object.fromEntries(flash.map((f) => [f.id, f]));
 const pad = (n) => String(n).padStart(3, '0');
 
 function media(w) {
   if (w.img) {
-    return `<div class="work__media"><img src="${w.img}" alt="${w.title}" loading="lazy" /></div>`;
+    return `<div class="work__media"><img src="${esc(w.img)}" alt="${esc(w.title)}" loading="lazy" /></div>`;
   }
   // заглушка: эскиз «на коже», пока нет реальных фото
   const f = byId[w.flash];
   return `<div class="work__media work__media--skin">
-      <img src="${svgToUrl(f.svg, '#FFFFFF')}" alt="${w.title}" loading="lazy" />
+      <img src="${svgToUrl(f.svg, '#FFFFFF')}" alt="${esc(w.title)}" loading="lazy" />
       <span class="work__badge mono">${t('photoSoon')}</span>
     </div>`;
 }
@@ -22,13 +23,13 @@ export function gallery({ grid, filter, works: source, lightbox }) {
   grid.innerHTML = works
     .map(
       (w, i) => `
-      <div class="work" role="button" tabindex="0" aria-label="${t('open', { title: w.title })}" data-i="${i}" data-style="${w.style}">
+      <div class="work" role="button" tabindex="0" aria-label="${esc(t('open', { title: w.title }))}" data-i="${i}" data-style="${esc(w.style)}">
         ${media(w)}
         <span class="work__pass mono">
           <span class="work__no">№ ${pad(w.id)}</span>
-          <span class="work__title">${w.title}</span>
+          <span class="work__title">${esc(w.title)}</span>
           <span>${w.size} ${t('cm')}</span>
-          <span class="work__meta">${w.styleLabel} · ${w.zone} · ${hours(w.hours)} ${t('hours')}</span>
+          <span class="work__meta">${esc(w.styleLabel)} · ${esc(w.zone)} · ${hours(w.hours)} ${t('hours')}</span>
         </span>
       </div>`,
     )
@@ -37,12 +38,12 @@ export function gallery({ grid, filter, works: source, lightbox }) {
   const cards = [...grid.children];
   const styles = ['all', ...new Set(works.map((w) => w.style))];
   filter.innerHTML = styles
-    .map((s, i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-s="${s}">${t(s)}</button>`)
+    .map((s, i) => `<button type="button" aria-pressed="${i === 0}" data-s="${esc(s)}">${esc(t(s))}</button>`)
     .join('');
   filter.addEventListener('click', (e) => {
     const b = e.target.closest('button');
     if (!b) return;
-    filter.querySelectorAll('button').forEach((x) => x.setAttribute('aria-selected', x === b));
+    filter.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
     cards.forEach((c) => c.classList.toggle('is-hidden', b.dataset.s !== 'all' && c.dataset.style !== b.dataset.s));
     window.dispatchEvent(new Event('layout:change'));
   });
@@ -107,10 +108,10 @@ export function flashSheet(track, onTry) {
       (f, i) => `
       <article class="flash-card">
         <div class="flash-card__no mono"><span>${t('sheet')} ${pad(i + 1)}</span><span>~${f.size} ${t('cm')}</span></div>
-        <img src="${svgToUrl(f.svg, '#F6F1E7')}" alt="${t('sketchAlt', { title: f.title })}" loading="lazy" />
-        <h3>${f.title}</h3>
+        <img src="${svgToUrl(f.svg, '#F6F1E7')}" alt="${esc(t('sketchAlt', { title: f.title }))}" loading="lazy" />
+        <h3>${esc(f.title)}</h3>
         <div class="flash-card__foot">
-          <span class="hand">${f.price}</span>
+          <span class="hand">${esc(f.price)}</span>
           <button type="button" class="btn" data-try="${f.id}">${t('tryOn')}</button>
         </div>
       </article>`,
