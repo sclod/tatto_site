@@ -4,6 +4,7 @@ import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { inkify, loadImage } from './ink.js';
 import { loadBody } from './body.js';
+import bodyUrl from './body.bin?url';
 
 export const SKINS = [
   { id: 'plaster', label: 'Гипс', color: '#ECE6DC', plaster: true },
@@ -41,7 +42,7 @@ const tri = new THREE.Triangle();
 
 export class TryOn {
   static async create(host, opts) {
-    const body = await loadBody(new URL('models/body.bin', document.baseURI).href);
+    const body = await loadBody(bodyUrl);
     return new TryOn(host, body, opts);
   }
 

@@ -26,7 +26,11 @@
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # готовый сайт в dist/
+npm run build:single  # весь сайт одним файлом dist-single/index.html
 ```
+
+`build:single` удобен, чтобы показать сайт без хостинга: файл открывается
+двойным кликом в браузере, всё (шрифты, 3D-модель) уже внутри.
 
 ## Как заменить заглушки на реальные данные
 
@@ -50,7 +54,7 @@ npm run build    # готовый сайт в dist/
 
 Тело — базовый меш [MakeHuman](https://github.com/makehumancommunity/makehuman)
 (лицензия **CC0**, можно использовать свободно, в том числе коммерчески).
-Он упакован в `public/models/body.bin` (~320 КБ) скриптом `tools/build-body.mjs`
+Он упакован в `src/tryon/body.bin` (~320 КБ) скриптом `tools/build-body.mjs`
 и сглаживается в браузере подразделением Loop. Пересобрать модель:
 
 ```bash

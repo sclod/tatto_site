@@ -4,7 +4,7 @@
 //   (cd mh && git sparse-checkout set makehuman/data/3dobjs makehuman/data/targets/macrodetails)
 //   node tools/build-body.mjs mh/makehuman/data
 //
-// Результат: public/models/body.bin
+// Результат: src/tryon/body.bin
 //   Uint32[4]  vertCount, indexCount, bodyIndexCount, quantScale
 //   Int16[vertCount*3]  женская фигура (метры * quantScale)
 //   Int16[vertCount*3]  мужская фигура
@@ -80,7 +80,7 @@ const pack = (pts) => {
 const female = pack(shape('female'));
 const male = pack(shape('male'));
 const header = new Uint32Array([used.length, indices.length, faces.body.length, Q]);
-const outDir = path.resolve('public/models');
+const outDir = path.resolve('src/tryon');
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(
   path.join(outDir, 'body.bin'),
