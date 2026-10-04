@@ -24,10 +24,13 @@
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # готовый сайт в dist/
+npm run dev           # разработка: http://localhost:5173
+npm run build         # готовый сайт в dist/
+npm start             # продакшен-сервер: отдаёт dist/ и принимает заявки (нужен .env)
 npm run build:single  # весь сайт одним файлом dist-single/index.html
 ```
+
+**Продакшен на своём VPS (домен, HTTPS, pm2, nginx) — пошагово в [DEPLOY.md](DEPLOY.md).**
 
 `build:single` удобен, чтобы показать сайт без хостинга: файл открывается
 двойным кликом в браузере, всё (шрифты, 3D-модель) уже внутри.
@@ -44,10 +47,11 @@ npm run build:single  # весь сайт одним файлом dist-single/in
 
 ## Заявки в Telegram
 
-Форма заявки отправляет сообщение (вместе со снимком из примерочной) в Telegram-бота
-через Cloudflare Worker — инструкция в `worker/README.md`. Токен бота хранится только
-в секретах воркера; в коде сайта и в репозитории его нет и быть не должно.
-Пока в `src/data/site.js` не указан `bookingEndpoint`, форма копирует текст и открывает Direct.
+Форма заявки отправляет сообщение (вместе со снимком из примерочной) на свой сервер
+(`POST /api/booking`, `server/`), а он — в Telegram-бота. Токен бота хранится только
+в `.env` на сервере; в коде сайта и в репозитории его нет и быть не должно.
+Сборка с `VITE_BOOKING_ENDPOINT=` (пусто, как на GitHub Pages) вместо этого копирует
+текст и открывает Direct.
 
 ## Мобильная примерочная
 
@@ -68,19 +72,23 @@ npm run build:single  # весь сайт одним файлом dist-single/in
 
 - `public/favicon.svg` (+ `favicon-32.png`, `apple-touch-icon.png`) — «искра» из флеш-листа.
 - `public/og.jpg` — картинка-превью, когда ссылку кидают в Telegram / Instagram.
-  Адреса в тегах `og:*` в `index.html` и `tryon.html` полные (`https://sclod.github.io/tatto_site/…`) —
-  при переезде на свой домен их нужно поменять.
+  Полные адреса в `og:*`, canonical, `sitemap.xml` и `robots.txt` подставляются при сборке
+  из `VITE_SITE_URL` (в `.env`).
 
 ## Безопасность
 
-- Content-Security-Policy (в обычной сборке): скрипты, стили и шрифты только с самого сайта,
-  никаких inline-обработчиков, `object-src 'none'`, `base-uri 'self'`.
+- Content-Security-Policy: скрипты, стили, шрифты и запросы — только к самому сайту,
+  никаких inline-обработчиков, `object-src 'none'`, `frame-ancestors 'none'`.
+  Сервер дополнительно шлёт `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`;
+  nginx — HSTS.
 - Всё, что вводит посетитель (имя файла, текст заявки), выводится только как текст,
   без вставки HTML.
 - Загрузка эскиза: только PNG / JPG / WEBP до 15 МБ, обработка целиком в браузере,
   файл никуда не отправляется.
-- Воркер заявок: проверка адреса сайта (Origin), лимит частоты, ловушка для ботов,
-  ограничения длины полей и размера фото, сообщения в Telegram без разметки.
+- Приём заявок: только со своего сайта (Origin), лимит частоты в nginx и в сервере,
+  ловушка для ботов, ограничения длины полей и размера тела (3 МБ), сообщения в Telegram
+  без разметки, токен не пишется в логи.
+- Сервер слушает только `127.0.0.1`, наружу его отдаёт nginx; выход за пределы `dist/` закрыт.
 - `npm audit`: в зависимостях сайта уязвимостей нет; предупреждения относятся только
   к `vite-plugin-singlefile` (инструмент сборки, на сайт не попадает).
 
@@ -92,15 +100,11 @@ npm run build:single  # весь сайт одним файлом dist-single/in
 3. **Контакты, город, Telegram** → `src/data/site.js` (`site`).
 4. **Цены** → `src/data/flash.js` (поле `price`).
 
-## Публикация (GitHub Pages)
+## Публикация
 
-В репозитории уже есть `.github/workflows/deploy.yml`. Достаточно:
-
-1. Settings → Pages → Source: **GitHub Actions**.
-2. Влить изменения в ветку `main` — сайт соберётся и опубликуется сам.
-
-Сайт статический, его можно выложить на любой хостинг (Netlify, Vercel, обычный сервер) —
-просто загрузить папку `dist/`.
+- **Основная — свой VPS:** [DEPLOY.md](DEPLOY.md) (`server/`, `ecosystem.config.cjs`, `deploy/`).
+- **Демо-копия — GitHub Pages:** `.github/workflows/deploy.yml` собирает сайт без сервера
+  (заявки через Direct) на https://sclod.github.io/tatto_site/.
 
 ## 3D-модель
 

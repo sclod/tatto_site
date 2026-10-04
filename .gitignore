@@ -1,7 +1,10 @@
 node_modules
 dist
 dist-single
+logs
 .DS_Store
-.dev.vars
-.wrangler
-.env*
+
+# секреты: токен бота и прочие настройки сервера
+.env
+.env.local
+.env.*.local

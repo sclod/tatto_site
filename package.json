@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "build:single": "vite build --mode single",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node --env-file=.env server/server.mjs",
+    "tg:chat-id": "node --env-file=.env tools/tg-chat-id.mjs"
   },
   "dependencies": {
     "@fontsource-variable/unbounded": "^5.3.0",
@@ -22,5 +24,8 @@
   "devDependencies": {
     "vite": "^8.3.2",
     "vite-plugin-singlefile": "^2.3.3"
+  },
+  "engines": {
+    "node": ">=20.11"
   }
 }

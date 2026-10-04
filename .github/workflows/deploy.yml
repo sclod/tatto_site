@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy preview to GitHub Pages
 
 on:
   push:
@@ -25,6 +25,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # демо-копия на GitHub Pages: своего сервера там нет — заявки уходят через Direct
+          VITE_SITE_URL: https://sclod.github.io/tatto_site
+          VITE_BOOKING_ENDPOINT: ''
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

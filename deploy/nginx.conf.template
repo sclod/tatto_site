@@ -1,0 +1,52 @@
+# nginx для VALOVA. Ставится скриптом deploy/setup-nginx.sh (он подставит домен вместо __DOMAIN__).
+
+# не больше 10 запросов в минуту на отправку заявки с одного IP
+limit_req_zone $binary_remote_addr zone=valova_booking:10m rate=10r/m;
+
+upstream valova_app {
+    server 127.0.0.1:__PORT__;
+    keepalive 16;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __DOMAIN__ www.__DOMAIN__;
+
+    location /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
+    location / { return 301 https://__DOMAIN__$request_uri; }
+}
+
+server {
+    # «ssl http2» в listen — работает и в nginx 1.24 (Ubuntu 24.04), где ещё нет директивы «http2 on»
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name __DOMAIN__ www.__DOMAIN__;
+
+    ssl_certificate     /etc/letsencrypt/live/__DOMAIN__/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/__DOMAIN__/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache shared:valova_ssl:10m;
+    ssl_session_timeout 1d;
+
+    # www → без www
+    if ($host = www.__DOMAIN__) { return 301 https://__DOMAIN__$request_uri; }
+
+    server_tokens off;
+    client_max_body_size 3m;   # заявка со снимком из примерочной
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    location = /api/booking {
+        limit_req zone=valova_booking burst=3 nodelay;
+        limit_req_status 429;
+        proxy_pass http://valova_app;
+        include /etc/nginx/snippets/valova-proxy.conf;
+    }
+
+    location / {
+        proxy_pass http://valova_app;
+        include /etc/nginx/snippets/valova-proxy.conf;
+    }
+}

@@ -1,6 +1,6 @@
 import { t, lang } from '../i18n.js';
 
-// Заявка. Если задан site.bookingEndpoint (Cloudflare Worker, см. worker/README.md) —
+// Заявка. Если задан site.bookingEndpoint (по умолчанию api/booking на нашем сервере) —
 // отправляем её в Telegram-бота. Иначе — запасной путь: копируем текст и открываем Direct.
 // Токен бота на сайте не хранится и храниться не должен.
 export function booking(form, site) {

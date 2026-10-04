@@ -7,9 +7,10 @@ export const site = {
   city: { uk: 'Місто', en: 'City' },
   studio: { uk: 'Студія · адреса за записом', en: 'Studio · address on booking' },
   timezone: 'Europe/Kyiv',
-  // Адрес Cloudflare Worker, который пересылает заявки в Telegram-бота (worker/README.md).
-  // Пусто — заявка копируется и открывается Direct. ТОКЕН БОТА СЮДА НЕ ПИСАТЬ.
-  bookingEndpoint: '',
+  // Куда отправлять заявки. На своём сервере это /api/booking (server/server.mjs шлёт их в Telegram).
+  // Пустая строка (VITE_BOOKING_ENDPOINT=) — заявка копируется и открывается Direct (для статических хостингов).
+  // ТОКЕН БОТА СЮДА НЕ ПИСАТЬ — он хранится только в .env на сервере.
+  bookingEndpoint: import.meta.env.VITE_BOOKING_ENDPOINT ?? 'api/booking',
 };
 
 // Работы для «Каталога образцов». Когда появятся фото — кладите их в public/works/
