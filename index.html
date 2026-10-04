@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VALOVA — татуировки и 3D-примерочная</title>
+    <meta name="description" content="Тату-мастер @tattoo.by.valova. Каталог работ, свободные эскизы и 3D-примерочная: загрузите эскиз и посмотрите, как он ляжет на тело." />
+    <meta name="theme-color" content="#EEE8DC" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23EEE8DC' stroke='%2316151B' stroke-width='2'/%3E%3Cpath d='M9 9l7 15 7-15' fill='none' stroke='%23D23A1E' stroke-width='3'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <canvas class="ink-trail" aria-hidden="true"></canvas>
+
+    <div class="loader" aria-hidden="true">
+      <div class="loader__row">
+        <span class="mono">заправляем машинку</span>
+        <span class="loader__count mono">000</span>
+      </div>
+      <div class="loader__line"><i></i></div>
+    </div>
+
+    <header class="nav">
+      <a href="#top" class="nav__logo">VALOVA<sup>®</sup></a>
+      <nav class="nav__links mono" aria-label="Разделы">
+        <a href="#works">Работы</a>
+        <a href="#tryon">Примерочная</a>
+        <a href="#flash">Эскизы</a>
+        <a href="#protocol">Сеанс</a>
+      </nav>
+      <span class="nav__time mono" data-clock>—:—</span>
+      <a href="#book" class="nav__cta mono">Записаться</a>
+    </header>
+
+    <main>
+      <!-- ——— HERO ——— -->
+      <section class="hero" id="top">
+        <div class="hero__meta mono">
+          <span>Образец № 001</span>
+          <span>кожа, чернила</span>
+          <span data-year></span>
+        </div>
+
+        <figure class="hero__plate" aria-hidden="true">
+          <div data-plate></div>
+          <figcaption class="mono"><span>рис. 1</span><span>мотылёк · 7 см</span></figcaption>
+          <span class="hand">предплечье, внутр.</span>
+        </figure>
+
+        <h1 class="hero__name" aria-label="Valova">
+          <span class="hero__letters" data-weight-letters>VALOVA</span>
+        </h1>
+
+        <div class="hero__row">
+          <p class="hero__lead">
+            Рисую на коже то, что
+            <em class="serif">останется с&nbsp;тобой</em>
+            дольше любых трендов.
+          </p>
+          <p class="hero__note hand">
+            ← сначала примерь,<br />потом решай
+          </p>
+        </div>
+
+        <a href="#tryon" class="stamp" aria-label="Перейти в 3D-примерочную">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs><path id="stamp-circle" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0" /></defs>
+            <text><textPath href="#stamp-circle" textLength="462" lengthAdjust="spacing">3D-ПРИМЕРОЧНАЯ ✶ ЗАПИСЬ ОТКРЫТА ✶ ПРИМЕРЬ ДО ИГЛЫ ✶</textPath></text>
+          </svg>
+          <span class="stamp__arrow">↘</span>
+        </a>
+
+        <div class="hero__foot mono">
+          <span>@tattoo.by.valova</span>
+          <span class="hero__scroll">листай <i></i></span>
+        </div>
+      </section>
+
+      <!-- ——— МАНИФЕСТ ——— -->
+      <section class="manifest" aria-label="О мастере">
+        <p class="manifest__label mono">(01) — о подходе</p>
+        <p class="manifest__text" data-reveal-words>
+          Каждая татуировка — это
+          <span class="pill"><img alt="" data-pill="moth" /></span>
+          образец, который проживёт с тобой жизнь. Я не копирую картинки из
+          интернета: рисую эскиз под
+          <span class="pill pill--wide"><img alt="" data-pill="flower" /></span>
+          изгиб твоего тела, его движение и свет. А чтобы не гадать —
+          <em class="serif">примерь его</em> здесь же, на 3D-слепке.
+        </p>
+        <p class="manifest__aside hand">шрамы, родинки, старые тату — тоже рисуем вокруг</p>
+      </section>
+
+      <!-- ——— КАТАЛОГ ——— -->
+      <section class="works" id="works">
+        <header class="section-head">
+          <p class="mono">(02) — каталог образцов</p>
+          <h2 class="display">Работы<em class="serif">, которые уже живут</em></h2>
+          <div class="chips" role="tablist" aria-label="Фильтр по стилю" data-filter></div>
+        </header>
+        <div class="works__grid" data-works></div>
+      </section>
+
+      <!-- ——— ПРИМЕРОЧНАЯ ——— -->
+      <section class="tryon" id="tryon">
+        <header class="section-head section-head--split">
+          <div>
+            <p class="mono">(03) — гипсовая мастерская</p>
+            <h2 class="display">Примерь<em class="serif"> до&nbsp;иглы</em></h2>
+          </div>
+          <p class="tryon__intro">
+            Загрузи свой эскиз или выбери из свободных. Нажми на фигуру — тату
+            переедет туда, потяни — подвинешь. Размер в сантиметрах, как в жизни.
+          </p>
+        </header>
+
+        <div class="tryon__app" data-tryon>
+          <div class="tryon__stage">
+            <div class="tryon__canvas" data-tryon-canvas>
+              <div class="tryon__placeholder mono" data-tryon-loading>загружаем слепок…</div>
+            </div>
+            <div class="tryon__views mono" role="radiogroup" aria-label="Ракурс" data-views></div>
+            <div class="tryon__zoom">
+              <button type="button" data-zoom="0.85" aria-label="Приблизить">+</button>
+              <button type="button" data-zoom="1.18" aria-label="Отдалить">−</button>
+              <button type="button" data-reset aria-label="Сбросить вид">⟲</button>
+            </div>
+            <p class="tryon__hint hand">тяни, чтобы вращать ↻</p>
+          </div>
+
+          <form class="sheet" data-panel onsubmit="return false">
+            <div class="sheet__head mono">
+              <span>Бланк примерки</span>
+              <span data-sheet-no>№ 0001</span>
+            </div>
+
+            <fieldset>
+              <legend class="mono">1. Эскиз</legend>
+              <label class="upload" data-drop>
+                <input type="file" accept="image/*" data-upload hidden />
+                <span class="upload__big">Загрузить свой</span>
+                <span class="upload__small mono">PNG/JPG · фото с бумаги тоже ок — фон уберём</span>
+              </label>
+              <div class="sheet__designs" data-designs></div>
+            </fieldset>
+
+            <fieldset data-needs-tattoo>
+              <legend class="mono">2. Посадка <span data-current-title></span></legend>
+              <label class="range">
+                <span class="mono">Размер</span>
+                <input type="range" min="3" max="30" step="0.5" data-prop="sizeCm" />
+                <output class="mono" data-out="sizeCm">10 см</output>
+              </label>
+              <label class="range">
+                <span class="mono">Поворот</span>
+                <input type="range" min="-180" max="180" step="1" data-prop="angle" />
+                <output class="mono" data-out="angle">0°</output>
+              </label>
+              <div class="toggles">
+                <div class="seg mono" role="radiogroup" aria-label="Цвет">
+                  <button type="button" data-set="mono" data-val="false">цвет</button>
+                  <button type="button" data-set="mono" data-val="true">ч/б</button>
+                </div>
+                <div class="seg mono" role="radiogroup" aria-label="Состояние">
+                  <button type="button" data-set="state" data-val="fresh">свежая</button>
+                  <button type="button" data-set="state" data-val="healed">зажившая</button>
+                </div>
+              </div>
+              <div class="sheet__row">
+                <button type="button" class="link mono" data-add>+ ещё одна тату</button>
+                <button type="button" class="link mono" data-remove>удалить</button>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mono">3. Модель</legend>
+              <div class="model-row">
+                <div class="seg mono" role="radiogroup" aria-label="Фигура">
+                  <button type="button" data-sex="female" aria-checked="true">она</button>
+                  <button type="button" data-sex="male">он</button>
+                </div>
+                <div class="skins" data-skins></div>
+              </div>
+            </fieldset>
+
+            <div class="sheet__actions">
+              <button type="button" class="btn btn--ghost" data-download>Скачать фото</button>
+              <button type="button" class="btn" data-send>Отправить мастеру →</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ——— ФЛЕШИ ——— -->
+      <section class="flash" id="flash">
+        <div class="flash__pin">
+          <header class="section-head">
+            <p class="mono">(04) — свободные эскизы</p>
+            <h2 class="display">Флеш<em class="serif">-лист</em></h2>
+            <p class="flash__note hand">каждый набивается один раз — потом он твой</p>
+          </header>
+          <div class="flash__track" data-flash></div>
+        </div>
+      </section>
+
+      <!-- ——— ПРОТОКОЛ ——— -->
+      <section class="protocol" id="protocol">
+        <div class="protocol__sticky">
+          <p class="mono">(05) — протокол сеанса</p>
+          <div class="protocol__num display" data-step-num>01</div>
+        </div>
+        <ol class="protocol__steps">
+          <li data-step="01">
+            <h3>Заявка</h3>
+            <p>Пишешь идею, зону и размер. Можно сразу прикрепить снимок из примерочной — так я пойму тебя с первого сообщения.</p>
+          </li>
+          <li data-step="02">
+            <h3>Эскиз</h3>
+            <p>Рисую индивидуально под тебя. Правки — до тех пор, пока не захочется сказать «да, это оно».</p>
+          </li>
+          <li data-step="03">
+            <h3>Предоплата и дата</h3>
+            <p>Фиксируем время. Перед сеансом — выспаться, поесть и не пить алкоголь накануне.</p>
+          </li>
+          <li data-step="04">
+            <h3>Сеанс</h3>
+            <p>Стерильно, одноразово, спокойно. Перевод эскиза, примерка на тело, и только потом — игла.</p>
+          </li>
+          <li data-step="05">
+            <h3>Заживление</h3>
+            <p>Выдаю памятку и остаюсь на связи. Бесплатная коррекция в течение двух месяцев.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ——— ПАМЯТКА-ЧЕК ——— -->
+      <section class="care" aria-label="Памятка по уходу">
+        <div class="care__slot">
+          <div class="receipt mono" data-receipt>
+            <p class="receipt__title">VALOVA TATTOO</p>
+            <p class="receipt__center">памятка по уходу</p>
+            <p class="receipt__dash">--------------------------------</p>
+            <dl>
+              <div><dt>плёнка</dt><dd>3–5 дней</dd></div>
+              <div><dt>мыть</dt><dd>2 р/день, тёплой водой</dd></div>
+              <div><dt>крем</dt><dd>тонким слоем</dd></div>
+              <div><dt>баня, бассейн</dt><dd>— 2 недели</dd></div>
+              <div><dt>солнце</dt><dd>— 1 месяц, потом SPF 50</dd></div>
+              <div><dt>чесать</dt><dd>нельзя :(</dd></div>
+              <div><dt>коррекция</dt><dd>0 ₽</dd></div>
+            </dl>
+            <p class="receipt__dash">--------------------------------</p>
+            <div class="receipt__total"><span>ИТОГО</span><span>НАВСЕГДА</span></div>
+            <p class="receipt__dash">--------------------------------</p>
+            <p class="receipt__center">спасибо, что доверяешь</p>
+            <svg class="receipt__code" viewBox="0 0 200 40" aria-hidden="true" data-barcode></svg>
+          </div>
+        </div>
+        <div class="care__text">
+          <p class="mono">(06) — после сеанса</p>
+          <h2 class="display">Чек<em class="serif"> на&nbsp;всю жизнь</em></h2>
+          <p>Хорошая татуировка — наполовину работа мастера, наполовину правильный уход. Эту памятку получишь и на бумаге, и в сообщении.</p>
+        </div>
+      </section>
+
+      <!-- ——— ЗАЯВКА ——— -->
+      <section class="book" id="book">
+        <header class="section-head">
+          <p class="mono">(07) — заявка</p>
+          <h2 class="display">Расскажи<em class="serif"> идею</em></h2>
+        </header>
+        <form class="book__form" data-book>
+          <label class="field field--wide">
+            <span class="mono">Идея</span>
+            <textarea name="idea" rows="3" placeholder="мотылёк на предплечье, тонкой линией…" required></textarea>
+          </label>
+          <label class="field">
+            <span class="mono">Зона</span>
+            <input name="zone" placeholder="предплечье" />
+          </label>
+          <label class="field">
+            <span class="mono">Размер, см</span>
+            <input name="size" inputmode="decimal" placeholder="10" />
+          </label>
+          <label class="field">
+            <span class="mono">Как к тебе обращаться</span>
+            <input name="name" placeholder="Имя" required />
+          </label>
+          <label class="field">
+            <span class="mono">Удобные дни</span>
+            <input name="when" placeholder="будни после 15:00" />
+          </label>
+          <div class="book__shot" data-shot hidden>
+            <img alt="Снимок из примерочной" data-shot-img />
+            <div>
+              <p class="mono">Снимок из примерочной</p>
+              <p class="hand">прикреплю к сообщению — скачай и отправь вместе с текстом</p>
+              <button type="button" class="link mono" data-shot-remove>убрать</button>
+            </div>
+          </div>
+          <div class="book__send">
+            <button class="btn btn--big" type="submit">Отправить в Direct →</button>
+            <a class="link mono" data-telegram hidden target="_blank" rel="noopener">или в Telegram</a>
+            <p class="book__fine mono" data-book-status>Текст заявки скопируется — останется вставить его в сообщение.</p>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="marquee display" aria-hidden="true">
+        <div class="marquee__inner">
+          <span>НАВСЕГДА —</span><span>НАВСЕГДА —</span><span>НАВСЕГДА —</span><span>НАВСЕГДА —</span>
+        </div>
+      </div>
+      <div class="footer__row mono">
+        <a href="https://instagram.com/tattoo.by.valova" target="_blank" rel="noopener">instagram ↗</a>
+        <span data-city></span>
+        <span>© <span data-year></span> VALOVA</span>
+        <a href="#top">наверх ↑</a>
+      </div>
+    </footer>
+
+    <div class="lightbox" data-lightbox hidden>
+      <button type="button" class="lightbox__close mono" data-lb-close>закрыть ✕</button>
+      <button type="button" class="lightbox__nav lightbox__nav--prev" data-lb-prev aria-label="Предыдущая">←</button>
+      <figure>
+        <div class="lightbox__media" data-lb-media></div>
+        <figcaption class="mono" data-lb-cap></figcaption>
+      </figure>
+      <button type="button" class="lightbox__nav lightbox__nav--next" data-lb-next aria-label="Следующая">→</button>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
