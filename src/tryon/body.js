@@ -1,9 +1,7 @@
 // Загружает тело, собранное tools/build-body.mjs из базового меша MakeHuman (CC0),
 // и один раз сглаживает его подразделением Loop — силуэт без «граней», файл остаётся лёгким.
 export async function loadBody(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`body model: ${res.status}`);
-  const buf = await res.arrayBuffer();
+  const buf = await readBuffer(url);
   const [verts, indexCount, bodyIndexCount, q] = new Uint32Array(buf, 0, 4);
   let off = 16;
   const unpack = () => {
@@ -24,6 +22,20 @@ export async function loadBody(url) {
     index: plan.index,
     bodyIndexCount: bodyIndexCount * 4,
   };
+}
+
+// В однофайловой сборке модель встроена как data:-URL — декодируем сами,
+// без fetch (в некоторых песочницах fetch для data: запрещён).
+async function readBuffer(url) {
+  if (url.startsWith('data:')) {
+    const bin = atob(url.slice(url.indexOf(',') + 1));
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out.buffer;
+  }
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`body model: ${res.status}`);
+  return res.arrayBuffer();
 }
 
 // Топология подразделения считается один раз и применяется к обеим фигурам.
