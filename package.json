@@ -1,5 +1,5 @@
 {
-  "name": "valova-tattoo",
+  "name": "tattoo-site",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,7 +9,8 @@
     "build:single": "vite build --mode single",
     "preview": "vite preview",
     "start": "node --env-file=.env server/server.mjs",
-    "tg:chat-id": "node --env-file=.env tools/tg-chat-id.mjs"
+    "tg:chat-id": "node --env-file=.env tools/tg-chat-id.mjs",
+    "og-image": "vite build && node tools/og-image.mjs && vite build"
   },
   "dependencies": {
     "@fontsource-variable/unbounded": "^5.3.0",

@@ -9,7 +9,7 @@ DOMAIN="${1:?Укажи домен: sudo bash deploy/setup-nginx.sh example.com 
 EMAIL="${2:?Укажи email для Lets Encrypt — туда придут напоминания о сертификате}"
 PORT="${PORT:-3000}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
-SITE=/etc/nginx/sites-available/valova
+SITE=/etc/nginx/sites-available/tattoo-site
 
 if [[ $EUID -ne 0 ]]; then echo "Запусти через sudo"; exit 1; fi
 
@@ -17,7 +17,7 @@ apt-get update -qq
 apt-get install -y -qq nginx certbot
 
 mkdir -p /var/www/letsencrypt /etc/nginx/snippets
-cp "$DIR/valova-proxy.conf" /etc/nginx/snippets/valova-proxy.conf
+cp "$DIR/tattoo-proxy.conf" /etc/nginx/snippets/tattoo-proxy.conf
 
 # 1) временный HTTP-конфиг — только чтобы Let's Encrypt проверил домен
 cat > "$SITE" <<CONF
@@ -26,10 +26,10 @@ server {
     listen [::]:80;
     server_name $DOMAIN www.$DOMAIN;
     location /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
-    location / { proxy_pass http://127.0.0.1:$PORT; include /etc/nginx/snippets/valova-proxy.conf; }
+    location / { proxy_pass http://127.0.0.1:$PORT; include /etc/nginx/snippets/tattoo-proxy.conf; }
 }
 CONF
-ln -sf "$SITE" /etc/nginx/sites-enabled/valova
+ln -sf "$SITE" /etc/nginx/sites-enabled/tattoo-site
 rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 

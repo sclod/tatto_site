@@ -6,6 +6,7 @@ import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-
 import { inkify, loadImage } from './ink.js';
 import { loadBody } from './body.js';
 import { t as tr } from '../i18n.js';
+import { BRAND } from '../data/brand.js';
 import bodyUrl from './body.bin?url';
 
 export const SKINS = [
@@ -687,7 +688,7 @@ export class TryOn {
     ctx.drawImage(src, 0, 0, W, H);
     ctx.fillStyle = '#16151B';
     ctx.font = '700 44px "Unbounded Variable", sans-serif';
-    ctx.fillText('VALOVA', 48, H + 70);
+    ctx.fillText(BRAND, 48, H + 70);
     ctx.font = '22px "JetBrains Mono", monospace';
     const t = this.selected;
     ctx.textAlign = 'right';

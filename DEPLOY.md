@@ -59,8 +59,8 @@ node -v    # v22.x
 
 ```bash
 su - deploy
-git clone https://github.com/sclod/tatto_site.git ~/valova
-cd ~/valova
+git clone https://github.com/sclod/tatto_site.git ~/tattoo-site
+cd ~/tattoo-site
 # пока изменения не влиты в main — работаем с этой веткой:
 git checkout claude/bold-galileo-l6xk95
 ```
@@ -120,7 +120,7 @@ sudo bash deploy/setup-nginx.sh example.com твой@email.com
 
 - Сайт открывается по `https://example.com`, `http://` и `www.` перекидывают туда же.
 - Отправь тестовую заявку с сайта (и со снимком из примерочной) — она должна прийти в Telegram.
-- Логи: `pm2 logs valova` (там видно `booking sent` или ошибку, токен в логи не пишется).
+- Логи: `pm2 logs tattoo-site` (там видно `booking sent` или ошибку, токен в логи не пишется).
 - Превью ссылки: отправь ссылку в Telegram. Если там старое превью —
   обнови его через бота @WebpageBot.
 
@@ -129,22 +129,22 @@ sudo bash deploy/setup-nginx.sh example.com твой@email.com
 После новых коммитов (новые фото, тексты, правки):
 
 ```bash
-cd ~/valova && bash deploy/update.sh
+cd ~/tattoo-site && bash deploy/update.sh
 ```
 
 Скрипт делает `git pull` → `npm ci` → `npm run build` → `pm2 reload` (без простоя).
 
 Если поменял `.env`:
-- `BOT_TOKEN` / `CHAT_ID` → достаточно `pm2 reload valova --update-env`;
-- `VITE_SITE_URL` → нужна пересборка: `npm run build && pm2 reload valova`.
+- `BOT_TOKEN` / `CHAT_ID` → достаточно `pm2 reload tattoo-site --update-env`;
+- `VITE_SITE_URL` → нужна пересборка: `npm run build && pm2 reload tattoo-site`.
 
 ## Если что-то не работает
 
 | Симптом | Что проверить |
 |---|---|
-| 502 Bad Gateway | `pm2 status` — процесс `valova` должен быть `online`; `pm2 logs valova` |
+| 502 Bad Gateway | `pm2 status` — процесс `tattoo-site` должен быть `online`; `pm2 logs tattoo-site` |
 | Сертификат не выпускается | DNS: `dig +short example.com` = IP сервера; открыт порт 80 (`ufw status`) |
-| Заявки не приходят | `.env` заполнен; боту написали `/start`; `pm2 logs valova` (`booking failed: telegram` — неверный токен/CHAT_ID) |
+| Заявки не приходят | `.env` заполнен; боту написали `/start`; `pm2 logs tattoo-site` (`booking failed: telegram` — неверный токен/CHAT_ID) |
 | «Не вийшло надіслати» на сайте | то же + `VITE_SITE_URL` совпадает с адресом в браузере (без www, https) |
 | После правок ничего не поменялось | `bash deploy/update.sh`; в браузере Ctrl+Shift+R |
 

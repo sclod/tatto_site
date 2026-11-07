@@ -2,7 +2,7 @@
 module.exports = {
   apps: [
     {
-      name: 'valova',
+      name: 'tattoo-site',
       script: 'server/server.mjs',
       cwd: __dirname,
       // секреты и настройки — из .env (Node ≥ 20.6 читает его сам)

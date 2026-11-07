@@ -20,7 +20,7 @@ const ROOT = fileURLToPath(new URL('../dist/', import.meta.url));
 const MAX_BODY = 3 * 1024 * 1024;
 
 if (!env.BOT_TOKEN || !env.CHAT_ID) {
-  console.warn('[valova] BOT_TOKEN/CHAT_ID не заданы — заявки с сайта отправляться не будут (см. .env.example)');
+  console.warn('[site] BOT_TOKEN/CHAT_ID не заданы — заявки с сайта отправляться не будут (см. .env.example)');
 }
 
 const TYPES = {
@@ -187,11 +187,11 @@ async function handleBooking(req, res) {
       throw new BookingError(400, 'json');
     }
     const result = await sendBooking(data, { botToken: env.BOT_TOKEN, chatId: env.CHAT_ID });
-    console.log(`[valova] ${new Date().toISOString()} booking ${result}`);
+    console.log(`[site] ${new Date().toISOString()} booking ${result}`);
     json(res, 200, { ok: true });
   } catch (err) {
     const status = err instanceof BookingError ? err.status : 502;
-    if (status >= 500) console.error(`[valova] booking failed: ${err.code || err.name}`);
+    if (status >= 500) console.error(`[site] booking failed: ${err.code || err.name}`);
     if (!res.headersSent) json(res, status, { ok: false, error: err.code || 'server' });
   }
 }
@@ -208,14 +208,14 @@ const server = http.createServer(async (req, res) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed', { Allow: 'GET, HEAD' });
     await serveStatic(req, res, pathname);
   } catch (err) {
-    console.error('[valova] request error', err);
+    console.error('[site] request error', err);
     if (!res.headersSent) send(res, 500, 'Server error', { 'Content-Type': 'text/plain; charset=utf-8' });
   }
 });
 
 server.keepAliveTimeout = 65_000; // дольше, чем keepalive у nginx
 server.listen(PORT, HOST, () => {
-  console.log(`[valova] http://${HOST}:${PORT} · dist: ${ROOT}`);
+  console.log(`[site] http://${HOST}:${PORT} · dist: ${ROOT}`);
   process.send?.('ready'); // pm2 wait_ready
 });
 

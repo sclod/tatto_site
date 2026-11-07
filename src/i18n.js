@@ -1,6 +1,7 @@
 // Языки сайта: украинский — основной, английский — по переключателю.
 // Выбор берётся из ?lang=en|uk, затем из localStorage, иначе — украинский.
 import { pageEn } from './i18n-page-en.js';
+import { BRAND } from './data/brand.js';
 
 const LANGS = ['uk', 'en'];
 
@@ -74,7 +75,7 @@ const S = {
   skinEbony: { uk: 'Ебоні', en: 'Ebony' },
   shotDefault: { uk: 'примірка', en: 'try-on' },
   shotNote: { uk: 'приміряно на сайті ↗', en: 'tried on at the site ↗' },
-  shotFile: { uk: 'valova-prymirka.jpg', en: 'valova-try-on.jpg' },
+  shotFile: { uk: `${BRAND.toLowerCase()}-prymirka.jpg`, en: `${BRAND.toLowerCase()}-try-on.jpg` },
 };
 
 export const t = (key, vars = {}) => (L(S[key]) ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');

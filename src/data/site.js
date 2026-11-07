@@ -1,9 +1,11 @@
 // Тексты-«заглушки», которые нужно заменить на реальные данные мастера.
 // Поля вида { uk, en } — на двух языках (украинский основной).
+import { BRAND } from './brand.js';
+
 export const site = {
-  name: 'VALOVA',
+  name: BRAND, // само название — в src/data/brand.js
   instagram: 'tattoo.by.valova',
-  telegram: '', // например 'valova_tattoo' — появится кнопка Telegram
+  telegram: '', // ник в Telegram без @, например 'my_tattoo' — появится кнопка Telegram
   city: { uk: 'Місто', en: 'City' },
   studio: { uk: 'Студія · адреса за записом', en: 'Studio · address on booking' },
   timezone: 'Europe/Kyiv',

@@ -1,9 +1,9 @@
-# nginx для VALOVA. Ставится скриптом deploy/setup-nginx.sh (он подставит домен вместо __DOMAIN__).
+# nginx для сайта. Ставится скриптом deploy/setup-nginx.sh (он подставит домен вместо __DOMAIN__).
 
 # не больше 10 запросов в минуту на отправку заявки с одного IP
-limit_req_zone $binary_remote_addr zone=valova_booking:10m rate=10r/m;
+limit_req_zone $binary_remote_addr zone=tattoo_booking:10m rate=10r/m;
 
-upstream valova_app {
+upstream tattoo_app {
     server 127.0.0.1:__PORT__;
     keepalive 16;
 }
@@ -27,7 +27,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/__DOMAIN__/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers off;
-    ssl_session_cache shared:valova_ssl:10m;
+    ssl_session_cache shared:tattoo_ssl:10m;
     ssl_session_timeout 1d;
 
     # www → без www
@@ -39,14 +39,14 @@ server {
     add_header Strict-Transport-Security "max-age=31536000" always;
 
     location = /api/booking {
-        limit_req zone=valova_booking burst=3 nodelay;
+        limit_req zone=tattoo_booking burst=3 nodelay;
         limit_req_status 429;
-        proxy_pass http://valova_app;
-        include /etc/nginx/snippets/valova-proxy.conf;
+        proxy_pass http://tattoo_app;
+        include /etc/nginx/snippets/tattoo-proxy.conf;
     }
 
     location / {
-        proxy_pass http://valova_app;
-        include /etc/nginx/snippets/valova-proxy.conf;
+        proxy_pass http://tattoo_app;
+        include /etc/nginx/snippets/tattoo-proxy.conf;
     }
 }

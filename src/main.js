@@ -13,7 +13,7 @@ import Lenis from 'lenis';
 import { translatePage, bindLangSwitch, L, lang } from './i18n.js';
 import { site, works } from './data/site.js';
 import { inkTrail } from './ui/ink-trail.js';
-import { weightLetters, clock } from './ui/hero.js';
+import { weightLetters, fitName, clock } from './ui/hero.js';
 import { gallery, flashSheet, pills, plate } from './ui/gallery.js';
 import { flash, svgToUrl } from './data/flash.js';
 import { tryOnUI } from './ui/tryon-ui.js';
@@ -46,6 +46,7 @@ clock($('[data-clock]'), site.timezone, L(site.city), lang === 'uk' ? 'uk-UA' : 
 // ——— модули ———
 inkTrail($('.ink-trail'));
 const letters = weightLetters($('[data-weight-letters]'));
+fitName($('[data-weight-letters]'));
 pills($('.manifest'));
 plate($('[data-plate]'));
 const cards = gallery({ grid: $('[data-works]'), filter: $('[data-filter]'), works, lightbox: $('[data-lightbox]') });

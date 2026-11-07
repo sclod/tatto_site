@@ -1,15 +1,18 @@
 // Буквы имени «набухают» рядом с курсором — вариативная жирность Unbounded (200–900).
 export function weightLetters(el) {
-  const text = el.textContent.trim();
+  const text = el.textContent.trim().replace(/\s+/g, ' ');
   el.textContent = '';
-  const half = Math.ceil(text.length / 2);
+  // на телефоне имя из нескольких слов переносится по пробелу (ближайшему к середине) —
+  // так оно крупнее; одно слово остаётся в строку, чтобы не резать его пополам
+  const spaces = [...text].flatMap((ch, i) => (ch === ' ' ? [i] : []));
+  const cut = spaces.sort((a, b) => Math.abs(a - text.length / 2) - Math.abs(b - text.length / 2))[0] ?? -1;
   const letters = [...text].map((ch, i) => {
-    // на телефоне имя переносится на две строки — так оно крупнее
-    if (i === half) el.insertAdjacentHTML('beforeend', '<i class="hero__br" aria-hidden="true"></i>');
     const s = document.createElement('span');
-    s.textContent = ch;
+    s.textContent = ch === ' ' ? '\u00a0' : ch;
     s.setAttribute('aria-hidden', 'true');
+    if (i === cut) s.className = 'hero__sp';
     el.appendChild(s);
+    if (i === cut) el.insertAdjacentHTML('beforeend', '<i class="hero__br" aria-hidden="true"></i>');
     return { el: s, w: 560, target: 560 };
   });
 
@@ -64,4 +67,32 @@ export function clock(el, tz, city, locale) {
   const draw = () => (el.textContent = `${city} ${fmt.format(new Date())}`);
   draw();
   setInterval(draw, 20_000);
+}
+
+// Название растягивается на ширину строки при любой длине (src/data/brand.js).
+// Меряем при самом жирном начертании, до которого доходит анимация (900), —
+// так буквы никогда не вылезут за край экрана.
+export function fitName(el, maxPx = 380) {
+  const h1 = el.parentElement;
+  const spans = [...el.querySelectorAll('span')];
+  const br = el.querySelector('.hero__br');
+  const fit = () => {
+    const prev = spans.map((s) => s.style.fontVariationSettings);
+    h1.style.fontSize = '100px';
+    spans.forEach((s) => (s.style.fontVariationSettings = "'wght' 900"));
+    // на телефоне название в две строки — равняемся на самую длинную
+    const cut = br && getComputedStyle(br).display !== 'none' ? spans.indexOf(br.nextElementSibling) : -1;
+    const lines = cut > 0 ? [spans.slice(0, cut), spans.slice(cut)] : [spans];
+    const widest = Math.max(...lines.map((l) => l.reduce((w, s) => w + s.getBoundingClientRect().width, 0)));
+    const size = Math.min(maxPx, (100 * h1.getBoundingClientRect().width * 0.99) / widest);
+    spans.forEach((s, i) => (s.style.fontVariationSettings = prev[i]));
+    h1.style.fontSize = `${size.toFixed(1)}px`;
+  };
+  fit();
+  document.fonts.ready.then(fit);
+  let raf = 0;
+  addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(fit);
+  });
 }
