@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
-import { BRAND } from './src/data/brand.js';
+import { BRAND, HERO_NAME } from './src/data/brand.js';
 
 // Политика безопасности контента (дублирует заголовок сервера — нужна для статических
 // хостингов вроде GitHub Pages, где заголовки не настроить): скрипты, стили, шрифты
@@ -54,12 +54,17 @@ export default defineConfig(({ mode }) => {
     base: './',
     plugins: [
       // в index.html / tryon.html: %SITE_URL% → адрес сайта из .env (VITE_SITE_URL),
-      // %BRAND% → название из src/data/brand.js
+      // %BRAND%, %HERO_NAME% → название и большая надпись из src/data/brand.js
       {
         name: 'site-vars',
         transformIndexHtml: {
           order: 'pre',
-          handler: (html) => html.replaceAll('%SITE_URL%', siteUrl).replaceAll('%BRAND%', BRAND),
+          handler: (html) =>
+            html
+              .replaceAll('%SITE_URL%', siteUrl)
+              .replaceAll('%BRAND%', BRAND)
+              .replaceAll('%HERO_LABEL%', HERO_NAME.replaceAll('|', ''))
+              .replaceAll('%HERO_NAME%', HERO_NAME),
         },
       },
       ...(single ? [viteSingleFile()] : [siteFiles(siteUrl)]),

@@ -1,12 +1,16 @@
 // Буквы имени «набухают» рядом с курсором — вариативная жирность Unbounded (200–900).
 export function weightLetters(el) {
-  const text = el.textContent.trim().replace(/\s+/g, ' ');
+  const raw = el.textContent.trim().replace(/\s+/g, ' ');
   el.textContent = '';
-  // на телефоне имя из нескольких слов переносится по пробелу (ближайшему к середине) —
-  // так оно крупнее; одно слово остаётся в строку, чтобы не резать его пополам
+  // на телефоне надпись переносится в две строки (так она крупнее): там, где стоит «|»,
+  // иначе по пробелу, ближайшему к середине; одно слово без «|» остаётся в строку
+  const mark = raw.indexOf('|');
+  const text = raw.replaceAll('|', '');
   const spaces = [...text].flatMap((ch, i) => (ch === ' ' ? [i] : []));
-  const cut = spaces.sort((a, b) => Math.abs(a - text.length / 2) - Math.abs(b - text.length / 2))[0] ?? -1;
+  const nearMiddle = (a, b) => Math.abs(a - text.length / 2) - Math.abs(b - text.length / 2);
+  const cut = mark > 0 ? -1 : (spaces.sort(nearMiddle)[0] ?? -1);
   const letters = [...text].map((ch, i) => {
+    if (i === mark) el.insertAdjacentHTML('beforeend', '<i class="hero__br" aria-hidden="true"></i>');
     const s = document.createElement('span');
     s.textContent = ch === ' ' ? '\u00a0' : ch;
     s.setAttribute('aria-hidden', 'true');

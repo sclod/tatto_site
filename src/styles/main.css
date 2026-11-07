@@ -268,7 +268,7 @@ button {
   font-weight: 800;
   font-size: min(calc((100vw - 2 * var(--gutter)) / 5.15), 380px);
   line-height: 0.8;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.06em;
   margin-left: -0.04em;
   white-space: nowrap;
 }
