@@ -6,7 +6,7 @@ import { BRAND, LOGO, HERO_NAME } from './src/data/brand.js';
 // Cloudflare Web Analytics (статистика посещений без cookie): токен из Cloudflare →
 // Analytics & Logs → Web Analytics → valova.space → «Manage site» → JS snippet, поле "token".
 // Токен публичный (он всё равно виден в коде страницы). Пустая строка — счётчика нет.
-const CF_BEACON_TOKEN = '';
+const CF_BEACON_TOKEN = 'b84143461a6d403f8d668526ae52a114';
 
 // Политика безопасности контента (дублирует заголовок из public/_headers): скрипты, стили,
 // шрифты и запросы — только к своему сайту (+ счётчик Cloudflare Web Analytics).
