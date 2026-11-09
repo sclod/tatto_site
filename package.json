@@ -8,8 +8,6 @@
     "build": "vite build",
     "build:single": "vite build --mode single",
     "preview": "vite preview",
-    "start": "node --env-file=.env server/server.mjs",
-    "tg:chat-id": "node --env-file=.env tools/tg-chat-id.mjs",
     "og-image": "vite build && node tools/og-image.mjs && vite build",
     "deploy": "vite build && wrangler deploy",
     "cf:dev": "vite build && wrangler dev"

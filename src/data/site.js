@@ -12,9 +12,9 @@ export const site = {
   // Флеш-лист (свободные эскизы). false — секция и пункт меню скрыты, номера секций идут подряд.
   // В 3D-примерочной эскизы-образцы остаются. Включить обратно: true.
   showFlash: false,
-  // Куда отправлять заявки. На своём сервере это /api/booking (server/server.mjs шлёт их в Telegram).
+  // Куда отправлять заявки: /api/booking — воркер Cloudflare (worker/index.js) шлёт их в Telegram.
   // Пустая строка (VITE_BOOKING_ENDPOINT=) — заявка копируется и открывается Direct (для статических хостингов).
-  // ТОКЕН БОТА СЮДА НЕ ПИСАТЬ — он хранится только в .env на сервере.
+  // ТОКЕН БОТА СЮДА НЕ ПИСАТЬ — он хранится только в секретах GitHub/Cloudflare.
   bookingEndpoint: import.meta.env.VITE_BOOKING_ENDPOINT ?? 'api/booking',
 };
 

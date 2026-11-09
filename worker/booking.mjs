@@ -1,6 +1,6 @@
 // Заявка с сайта → сообщение в Telegram-бота.
-// Токен бота берётся только из окружения сервера (секреты Cloudflare или .env), в браузер он не попадает.
-// Без зависимостей от Node: тот же код работает в Cloudflare Worker (worker/index.js) и в server/server.mjs.
+// Токен бота и CHAT_ID — секреты воркера Cloudflare (задаются из секретов GitHub при публикации),
+// в браузер и в репозиторий они не попадают. Вызывается из worker/index.js.
 
 const LIMITS = { name: 80, contact: 120, idea: 1500, zone: 80, size: 20, when: 120, lang: 5, title: 80 };
 const MAX_PHOTO = 1_800_000; // байт после декодирования

@@ -3,16 +3,21 @@ import { defineConfig, loadEnv } from 'vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import { BRAND, LOGO, HERO_NAME } from './src/data/brand.js';
 
-// Политика безопасности контента (дублирует заголовок сервера — нужна для статических
-// хостингов вроде GitHub Pages, где заголовки не настроить): скрипты, стили, шрифты
-// и запросы — только к своему сайту. В dev-сервере и однофайловой сборке не добавляется.
+// Cloudflare Web Analytics (статистика посещений без cookie): токен из Cloudflare →
+// Analytics & Logs → Web Analytics → valova.space → «Manage site» → JS snippet, поле "token".
+// Токен публичный (он всё равно виден в коде страницы). Пустая строка — счётчика нет.
+const CF_BEACON_TOKEN = '';
+
+// Политика безопасности контента (дублирует заголовок из public/_headers): скрипты, стили,
+// шрифты и запросы — только к своему сайту (+ счётчик Cloudflare Web Analytics).
+// В dev-сервере и однофайловой сборке не добавляется.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  "script-src 'self' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://cloudflareinsights.com",
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",
@@ -27,6 +32,15 @@ const siteFiles = (siteUrl) => ({
   transformIndexHtml: () => [
     { tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: CSP }, injectTo: 'head-prepend' },
     { tag: 'meta', attrs: { name: 'referrer', content: 'strict-origin-when-cross-origin' }, injectTo: 'head' },
+    ...(CF_BEACON_TOKEN
+      ? [
+          {
+            tag: 'script',
+            attrs: { defer: true, src: 'https://static.cloudflareinsights.com/beacon.min.js', 'data-cf-beacon': JSON.stringify({ token: CF_BEACON_TOKEN }) },
+            injectTo: 'body',
+          },
+        ]
+      : []),
   ],
   generateBundle() {
     const pages = ['', 'tryon'];
@@ -44,7 +58,7 @@ ${pages.map((p) => `  <url><loc>${siteUrl}/${p}</loc><lastmod>${today}</lastmod>
   },
 });
 
-// base './' — сайт работает и в корне домена, и в подпапке (GitHub Pages).
+// base './' — сайт работает и в корне домена, и в подпапке.
 // `--mode single` собирает главную страницу в один HTML-файл для показа без сервера.
 export default defineConfig(({ mode }) => {
   const single = mode === 'single';
@@ -53,7 +67,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: './',
     plugins: [
-      // в index.html / tryon.html: %SITE_URL% → адрес сайта из .env (VITE_SITE_URL),
+      // в index.html / tryon.html: %SITE_URL% → адрес сайта (VITE_SITE_URL, по умолчанию https://valova.space),
       // %BRAND%, %LOGO%, %HERO_NAME% → название, логотип и большая надпись из src/data/brand.js
       {
         name: 'site-vars',

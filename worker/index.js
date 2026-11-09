@@ -3,7 +3,7 @@
 // POST /api/booking — заявка с сайта → сообщение в Telegram-бота.
 // BOT_TOKEN и CHAT_ID — секреты воркера (Cloudflare → Worker → Settings → Variables and Secrets),
 // в коде и в репозитории их нет.
-import { sendBooking, rateLimiter, BookingError } from '../server/booking.mjs';
+import { sendBooking, rateLimiter, BookingError } from './booking.mjs';
 
 const MAX_BODY = 3 * 1024 * 1024;
 // запасной лимит в памяти воркера; основной — привязка BOOKING_LIMIT (Cloudflare Rate Limiting)
