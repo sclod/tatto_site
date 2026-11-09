@@ -112,7 +112,6 @@ export function flashSheet(track, onTry) {
         <img src="${svgToUrl(f.svg, '#F6F1E7')}" alt="${esc(t('sketchAlt', { title: f.title }))}" loading="lazy" />
         <h3>${esc(f.title)}</h3>
         <div class="flash-card__foot">
-          <span class="hand">${esc(f.price)}</span>
           <button type="button" class="btn" data-try="${f.id}">${t('tryOn')}</button>
         </div>
       </article>`,

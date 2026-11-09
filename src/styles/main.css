@@ -1081,6 +1081,7 @@ input[type='range']::-moz-range-thumb {
   font-size: 26px;
 }
 .flash-card .btn {
+  margin-left: auto;
   padding: 9px 14px;
   font-size: 12px;
 }
