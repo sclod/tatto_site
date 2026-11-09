@@ -19,12 +19,12 @@ export const site = {
 // и указывайте `img: 'works/01.jpg'`. Пока img нет, показывается эскиз-заглушка.
 // style — ключ стиля из src/i18n.js: graphic | color | fineline.
 export const works = [
-  { id: 1, title: { uk: 'Нічний метелик', en: 'Night moth' }, style: 'graphic', zone: { uk: 'передпліччя', en: 'forearm' }, size: 12, hours: 3, flash: 'moth' },
-  { id: 2, title: { uk: 'Змія-оберіг', en: 'Guardian snake' }, style: 'color', zone: { uk: 'гомілка', en: 'shin' }, size: 18, hours: 5, flash: 'snake' },
-  { id: 3, title: { uk: 'Польова квітка', en: 'Wildflower' }, style: 'fineline', zone: { uk: 'ключиця', en: 'collarbone' }, size: 8, hours: 2, flash: 'flower' },
-  { id: 4, title: { uk: 'Око', en: 'The eye' }, style: 'graphic', zone: { uk: 'спина', en: 'back' }, size: 14, hours: 4, flash: 'eye' },
-  { id: 5, title: { uk: 'Місяць', en: 'Moon' }, style: 'fineline', zone: { uk: 'зап’ястя', en: 'wrist' }, size: 6, hours: 1.5, flash: 'moon' },
-  { id: 6, title: { uk: 'Назавжди', en: 'Forever' }, style: 'color', zone: { uk: 'плече', en: 'shoulder' }, size: 10, hours: 3, flash: 'heart' },
-  { id: 7, title: { uk: 'Метелик II', en: 'Moth II' }, style: 'graphic', zone: { uk: 'стегно', en: 'thigh' }, size: 16, hours: 4, flash: 'moth' },
-  { id: 8, title: { uk: 'Гілка', en: 'Branch' }, style: 'fineline', zone: { uk: 'ребра', en: 'ribs' }, size: 15, hours: 3, flash: 'flower' },
+  { id: 1, title: { uk: 'Місячний метелик', en: 'Luna moth' }, style: 'graphic', zone: { uk: 'передпліччя', en: 'forearm' }, size: 12, hours: 3, flash: 'luna' },
+  { id: 2, title: { uk: 'Змія і кинджал', en: 'Snake & dagger' }, style: 'color', zone: { uk: 'гомілка', en: 'shin' }, size: 18, hours: 5, flash: 'dagger' },
+  { id: 3, title: { uk: 'Бант і рябчики', en: 'Bow & fritillaries' }, style: 'fineline', zone: { uk: 'ключиця', en: 'collarbone' }, size: 10, hours: 2.5, flash: 'bow' },
+  { id: 4, title: { uk: 'Кібер-сигіл', en: 'Cyber sigil' }, style: 'graphic', zone: { uk: 'хребет', en: 'spine' }, size: 24, hours: 4, flash: 'sigil' },
+  { id: 5, title: { uk: 'Орнамент-люстра', en: 'Chandelier ornament' }, style: 'fineline', zone: { uk: 'грудина', en: 'sternum' }, size: 15, hours: 4, flash: 'sternum' },
+  { id: 6, title: { uk: 'Восьминіг', en: 'Octopus' }, style: 'graphic', zone: { uk: 'стегно', en: 'thigh' }, size: 16, hours: 5, flash: 'octopus' },
+  { id: 7, title: { uk: 'Сигіл II', en: 'Sigil II' }, style: 'graphic', zone: { uk: 'передпліччя', en: 'forearm' }, size: 14, hours: 3, flash: 'sigil' },
+  { id: 8, title: { uk: 'Метелик II', en: 'Moth II' }, style: 'fineline', zone: { uk: 'ребра', en: 'ribs' }, size: 13, hours: 3, flash: 'luna' },
 ];

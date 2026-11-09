@@ -22,7 +22,7 @@ $('[data-home]').href = lang === 'en' ? './?lang=en' : './';
 const root = $('[data-tryon]');
 const ui = tryOnUI(root, { zoom: true, eager: true });
 
-// ?design=moth — пришли с флеш-листа по кнопке «приміряти»
+// ?design=luna — пришли с флеш-листа по кнопке «приміряти»
 const design = new URLSearchParams(location.search).get('design');
 if (design) ui.tryFlash(design);
 

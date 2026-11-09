@@ -30,7 +30,7 @@ export const pageEn = {
   heroSpecimen: 'Specimen No. 001',
   heroMaterial: 'skin, ink',
   plateFig: 'fig. 1',
-  plateCaption: 'moth · 7 cm',
+  plateCaption: 'luna moth · 10 cm',
   plateNote: 'inner forearm',
   heroLead: 'I draw on skin what will <em class="serif">stay with&nbsp;you</em> longer than any trend.',
   heroNote: '← try it on first,<br />then decide',
@@ -41,7 +41,7 @@ export const pageEn = {
   manifestLabel: 'About the artist',
   manifestEyebrow: '(01) — approach',
   manifestText:
-    'Every tattoo is a <span class="pill"><img alt="" data-pill="moth" /></span> specimen that will live a whole life with you. I don’t copy pictures from the internet: I draw each sketch for <span class="pill pill--wide"><img alt="" data-pill="flower" /></span> the curve of your body, its movement and light. And so you don’t have to guess, <em class="serif">try it on</em> right here, on a 3D figure.',
+    'Every tattoo is a <span class="pill"><img alt="" data-pill="luna" /></span> specimen that will live a whole life with you. I don’t copy pictures from the internet: I draw each sketch for <span class="pill pill--wide"><img alt="" data-pill="sternum" /></span> the curve of your body, its movement and light. And so you don’t have to guess, <em class="serif">try it on</em> right here, on a 3D figure.',
   manifestAside: 'scars, moles, old tattoos — we work around them too',
 
   worksEyebrow: '(02) — specimen catalogue',

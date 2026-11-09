@@ -132,8 +132,17 @@ export function pills(root) {
 
 // «Рисунок 1» в hero: эскиз прорисовывается линия за линией.
 export function plate(el) {
-  el.innerHTML = paintSvg(byId.moth.svg).replace(/ width="1000" height="1000"/, '');
+  el.innerHTML = paintSvg(byId.luna.svg).replace(/ width="1000" height="1000"/, '');
+  // зеркальные половины (<use>) разворачиваем в обычные копии, чтобы их тоже можно было «прорисовать»
+  el.querySelectorAll('use').forEach((u) => {
+    const g = el.querySelector(u.getAttribute('href')).cloneNode(true);
+    g.removeAttribute('id');
+    g.setAttribute('transform', u.getAttribute('transform'));
+    u.replaceWith(g);
+  });
+  // контуры прорисовываются линией, заливки, точки dotwork и пунктиры — проявляются
   el.querySelectorAll('path, circle, ellipse').forEach((n) => {
+    if (n.matches('.fill, .dots, [stroke-dasharray]')) return n.classList.add('fade');
     n.setAttribute('pathLength', '1');
     n.classList.add('draw');
   });
