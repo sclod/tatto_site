@@ -48,7 +48,8 @@ async function booking(request, env) {
     return json(200, { ok: true });
   } catch (err) {
     const status = err instanceof BookingError ? err.status : 502;
-    if (status >= 500) console.error(`booking failed: ${err.code || err.name}`); // без токена и тела заявки
+    // без токена и текста заявки: только код и ответ Telegram («chat not found», «Unauthorized»…)
+    if (status >= 500) console.error(`booking failed: ${err.code || err.name}${err.detail ? ` (${err.detail})` : ''}`);
     return json(status, { ok: false, error: err.code || 'server' });
   }
 }

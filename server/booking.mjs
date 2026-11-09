@@ -34,6 +34,10 @@ const clean = (v, max) =>
  */
 export async function sendBooking(data, { botToken, chatId, apiBase = 'https://api.telegram.org' }) {
   if (!data || typeof data !== 'object') throw new BookingError(400, 'json');
+  // секреты часто вставляют с пробелами или как «Id: 123456789» — оставляем только суть
+  botToken = String(botToken).trim();
+  chatId = String(chatId).trim();
+  if (/\d/.test(chatId) && !chatId.startsWith('@')) chatId = chatId.match(/-?\d+/)[0];
 
   // ловушки для ботов: скрытое поле и слишком быстрое заполнение
   if (data.website) return 'ignored';
@@ -86,8 +90,13 @@ export async function sendBooking(data, { botToken, chatId, apiBase = 'https://a
       await call('sendPhoto', p).catch(() => {});
     }
   }
-  // ответ Telegram наружу не отдаём — в нём может быть служебная информация
-  if (!res.ok) throw new BookingError(502, 'telegram');
+  // ответ Telegram наружу не отдаём, только в лог сервера (в нём нет токена): «chat not found», «Unauthorized»…
+  if (!res.ok) {
+    const answer = await res.json().catch(() => null);
+    const err = new BookingError(502, 'telegram');
+    err.detail = `${res.status} ${String(answer?.description || '').slice(0, 200)}`.trim();
+    throw err;
+  }
   return 'sent';
 }
 

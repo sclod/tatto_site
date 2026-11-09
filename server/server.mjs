@@ -191,7 +191,7 @@ async function handleBooking(req, res) {
     json(res, 200, { ok: true });
   } catch (err) {
     const status = err instanceof BookingError ? err.status : 502;
-    if (status >= 500) console.error(`[site] booking failed: ${err.code || err.name}`);
+    if (status >= 500) console.error(`[site] booking failed: ${err.code || err.name}${err.detail ? ` (${err.detail})` : ''}`);
     if (!res.headersSent) json(res, status, { ok: false, error: err.code || 'server' });
   }
 }
