@@ -3,6 +3,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "valova",
+  // ID аккаунта Cloudflare (не секрет: без API-токена с ним ничего сделать нельзя)
+  "account_id": "549f176037748709264822b46829e09b",
   "main": "worker/index.js",
   "compatibility_date": "2025-10-01",
   "assets": {
