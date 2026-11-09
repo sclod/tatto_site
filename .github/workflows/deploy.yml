@@ -41,4 +41,5 @@ jobs:
           npx wrangler deploy
       - name: Telegram secrets for the booking form
         if: env.BOT_TOKEN != '' && env.CHAT_ID != ''
-        run: node -e 'process.stdout.write(JSON.stringify({ BOT_TOKEN: process.env.BOT_TOKEN, CHAT_ID: process.env.CHAT_ID }))' | npx wrangler secret bulk
+        run: |
+          node -e 'process.stdout.write(JSON.stringify({ BOT_TOKEN: process.env.BOT_TOKEN, CHAT_ID: process.env.CHAT_ID }))' | npx wrangler secret bulk
