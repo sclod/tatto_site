@@ -5,7 +5,7 @@ import { BRAND } from './data/brand.js';
 export const pageEn = {
   title: `${BRAND} — tattoos and 3D try-on`,
   description:
-    'Tattoo artist @tattoo.by.valova. Portfolio, available flash and a 3D try-on: upload a sketch and see how it sits on the body.',
+    'Tattoo artist @tattoo.by.valova. Portfolio and a 3D try-on: upload a sketch and see how it sits on the body.',
   titleTryon: `3D try-on — ${BRAND}`,
   descTryon: 'Upload a sketch and try the tattoo on a 3D figure.',
   tpTitle: '3D try-on',

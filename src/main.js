@@ -38,6 +38,16 @@ addEventListener('layout:change', () => ScrollTrigger.refresh());
 translatePage();
 bindLangSwitch();
 
+// ——— флеш-лист можно скрыть в src/data/site.js (showFlash) ———
+if (!site.showFlash) {
+  $('#flash')?.remove();
+  $$('a[href="#flash"]').forEach((a) => a.remove());
+  // «(01) — …», «(02) — …»: номера секций без пропуска
+  $$('[data-i18n$="Eyebrow"]').forEach((p, i) => {
+    p.textContent = p.textContent.replace(/^\(\d+\)/, `(${String(i + 1).padStart(2, '0')})`);
+  });
+}
+
 // ——— статичные данные ———
 $$('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
 $('[data-city]').textContent = `${L(site.city)} · ${L(site.studio)}`;
@@ -61,7 +71,7 @@ const tryonUrl = (design) => {
 $$('[data-tryon-link]').forEach((a) => (a.href = tryonUrl()));
 $('[data-cta-art]').innerHTML = `<img src="${svgToUrl(flash[0].svg)}" alt="" />`;
 const phone = matchMedia('(max-width: 800px)');
-flashSheet($('[data-flash]'), (id) => {
+if ($('[data-flash]')) flashSheet($('[data-flash]'), (id) => {
   if (phone.matches) {
     location.href = tryonUrl(id);
     return;
@@ -185,7 +195,7 @@ if (!reduce) {
   });
 
   // горизонтальная лента флешей (только десктоп)
-  gsap.matchMedia().add('(min-width: 801px)', () => {
+  if ($('[data-flash]')) gsap.matchMedia().add('(min-width: 801px)', () => {
     // всё, что создано внутри, gsap сам откатит при переходе на узкий экран
     const track = $('[data-flash]');
     const dist = () => Math.max(0, track.scrollWidth - innerWidth);
