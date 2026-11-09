@@ -1,5 +1,6 @@
 // Заявка с сайта → сообщение в Telegram-бота.
-// Токен бота берётся только из окружения сервера (.env), в браузер он не попадает.
+// Токен бота берётся только из окружения сервера (секреты Cloudflare или .env), в браузер он не попадает.
+// Без зависимостей от Node: тот же код работает в Cloudflare Worker (worker/index.js) и в server/server.mjs.
 
 const LIMITS = { name: 80, contact: 120, idea: 1500, zone: 80, size: 20, when: 120, lang: 5, title: 80 };
 const MAX_PHOTO = 1_800_000; // байт после декодирования
@@ -31,7 +32,7 @@ const clean = (v, max) =>
  * Проверяет заявку и отправляет её в Telegram.
  * @returns {Promise<'sent'|'ignored'>} 'ignored' — сработала ловушка для ботов (клиенту отвечаем «ок»)
  */
-export async function sendBooking(data, { botToken, chatId }) {
+export async function sendBooking(data, { botToken, chatId, apiBase = 'https://api.telegram.org' }) {
   if (!data || typeof data !== 'object') throw new BookingError(400, 'json');
 
   // ловушки для ботов: скрытое поле и слишком быстрое заполнение
@@ -53,13 +54,14 @@ export async function sendBooking(data, { botToken, chatId }) {
   if (typeof data.image === 'string') {
     const m = /^data:image\/(jpeg|png);base64,([A-Za-z0-9+/=]+)$/.exec(data.image);
     if (m) {
-      const bytes = Buffer.from(m[2], 'base64');
+      const bin = atob(m[2]);
+      const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
       if (bytes.length <= MAX_PHOTO) photo = new Blob([bytes], { type: `image/${m[1]}` });
     }
   }
 
-  // TELEGRAM_API можно переопределить только для тестов (поддельный Telegram)
-  const api = `${process.env.TELEGRAM_API || 'https://api.telegram.org'}/bot${botToken}`;
+  // apiBase переопределяется только для тестов (поддельный Telegram)
+  const api = `${apiBase}/bot${botToken}`;
   const call = (method, body) =>
     fetch(`${api}/${method}`, {
       method: 'POST',

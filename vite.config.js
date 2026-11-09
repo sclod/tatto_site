@@ -29,7 +29,7 @@ const siteFiles = (siteUrl) => ({
     { tag: 'meta', attrs: { name: 'referrer', content: 'strict-origin-when-cross-origin' }, injectTo: 'head' },
   ],
   generateBundle() {
-    const pages = ['', 'tryon.html'];
+    const pages = ['', 'tryon'];
     const today = new Date().toISOString().slice(0, 10);
     this.emitFile({
       type: 'asset',
@@ -49,7 +49,7 @@ ${pages.map((p) => `  <url><loc>${siteUrl}/${p}</loc><lastmod>${today}</lastmod>
 export default defineConfig(({ mode }) => {
   const single = mode === 'single';
   const env = loadEnv(mode, process.cwd(), 'VITE_');
-  const siteUrl = (env.VITE_SITE_URL || 'https://example.com').replace(/\/+$/, '');
+  const siteUrl = (env.VITE_SITE_URL || 'https://valova.space').replace(/\/+$/, '');
   return {
     base: './',
     plugins: [

@@ -186,7 +186,7 @@ async function handleBooking(req, res) {
     } catch {
       throw new BookingError(400, 'json');
     }
-    const result = await sendBooking(data, { botToken: env.BOT_TOKEN, chatId: env.CHAT_ID });
+    const result = await sendBooking(data, { botToken: env.BOT_TOKEN, chatId: env.CHAT_ID, apiBase: env.TELEGRAM_API });
     console.log(`[site] ${new Date().toISOString()} booking ${result}`);
     json(res, 200, { ok: true });
   } catch (err) {

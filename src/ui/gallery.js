@@ -7,7 +7,7 @@ const pad = (n) => String(n).padStart(3, '0');
 
 function media(w) {
   if (w.img) {
-    return `<div class="work__media"><img src="${esc(w.img)}" alt="${esc(w.title)}" loading="lazy" /></div>`;
+    return `<div class="work__media"><img src="${esc(w.img)}" alt="${esc(w.title)}" width="1000" height="1250" loading="lazy" decoding="async" /></div>`;
   }
   // заглушка: эскиз «на коже», пока нет реальных фото
   const f = byId[w.flash];
@@ -20,6 +20,7 @@ function media(w) {
 export function gallery({ grid, filter, works: source, lightbox }) {
   const hours = (h) => (lang === 'uk' ? String(h).replace('.', ',') : String(h));
   const works = source.map((w) => ({ ...w, title: L(w.title), zone: L(w.zone), styleLabel: t(w.style) }));
+  const meta = (w) => [w.styleLabel, w.zone, w.hours && `${hours(w.hours)} ${t('hours')}`].filter(Boolean).join(' · ');
   grid.innerHTML = works
     .map(
       (w, i) => `
@@ -28,8 +29,8 @@ export function gallery({ grid, filter, works: source, lightbox }) {
         <span class="work__pass mono">
           <span class="work__no">№ ${pad(w.id)}</span>
           <span class="work__title">${esc(w.title)}</span>
-          <span>${w.size} ${t('cm')}</span>
-          <span class="work__meta">${esc(w.styleLabel)} · ${esc(w.zone)} · ${hours(w.hours)} ${t('hours')}</span>
+          <span>${w.size ? `${w.size} ${t('cm')}` : ''}</span>
+          <span class="work__meta">${esc(meta(w))}</span>
         </span>
       </div>`,
     )
@@ -58,7 +59,7 @@ export function gallery({ grid, filter, works: source, lightbox }) {
     cur = i;
     const w = works[i];
     lbMedia.innerHTML = media(w);
-    lbCap.textContent = `№ ${pad(w.id)} — ${w.title} · ${w.styleLabel} · ${w.zone} · ${w.size} ${t('cm')}`;
+    lbCap.textContent = [`№ ${pad(w.id)} — ${w.title}`, w.styleLabel, w.zone, w.size && `${w.size} ${t('cm')}`].filter(Boolean).join(' · ');
   };
   const step = (d) => {
     const v = visibleIdx();
@@ -120,13 +121,6 @@ export function flashSheet(track, onTry) {
   track.addEventListener('click', (e) => {
     const b = e.target.closest('[data-try]');
     if (b) onTry(b.dataset.try);
-  });
-}
-
-export function pills(root) {
-  root.querySelectorAll('[data-pill]').forEach((img) => {
-    const f = byId[img.dataset.pill];
-    img.src = svgToUrl(f.svg, '#E4DCCB');
   });
 }
 
