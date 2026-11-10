@@ -476,7 +476,7 @@ section {
 .manifest__me {
   margin: 0;
   width: min(100%, 210px);
-  padding: 9px 9px 4px;
+  padding: 9px 9px 30px;
   background: #fbf8f1;
   box-shadow: 0 14px 34px rgba(22, 21, 27, 0.13), 0 1px 2px rgba(22, 21, 27, 0.12);
   transform: rotate(-3deg);
@@ -487,11 +487,6 @@ section {
   height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-}
-.manifest__me figcaption {
-  font-size: 23px;
-  text-align: center;
-  padding: 4px 0 2px;
 }
 .manifest__label {
   color: var(--ink-soft);
